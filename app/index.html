@@ -2,6 +2,8 @@
 <html lang="pt-BR" data-palette="ciano">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-dYRgjUgOAT7Nq5YjNtE1F8koD6QP/Dh+jJIEVPrNkoo='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src https://audizsjaopccvcgplbgt.supabase.co wss://audizsjaopccvcgplbgt.supabase.co; form-action 'self'; base-uri 'self'; object-src 'none'; frame-src 'none'; manifest-src 'self'; upgrade-insecure-requests; media-src 'self' blob:">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Getting Back</title>
 <meta name="description" content="Getting Back: app gratuito para voltar à rotina devagar, com três hábitos por vez, avisos calmos e uma árvore que cresce com o seu diário.">
@@ -387,6 +389,31 @@
   #tree.s-verao .leaves ellipse:nth-child(3n){fill:color-mix(in srgb,var(--accent) 70%,#3ccf7e)}
   #tree.s-primavera .flowers circle{fill:#FFB3C7}
 
+  /* conta */
+  .acct{display:flex;align-items:center;gap:12px}
+  .acct .av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--surf-2);border:1.5px solid var(--line);font-family:var(--display);font-weight:600;flex-shrink:0}
+  .acct .grow{flex:1;min-width:0}
+  .acct b{display:block;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .acct small{color:var(--muted);font-size:13px}
+  .btnrow{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .btn2{flex:1;min-width:120px;border:1.5px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 14px;font-size:15px;font-weight:600;cursor:pointer}
+  .btn2.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .btn2.danger{color:#FF7A8A}
+  .gbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:1.5px solid var(--line);background:#fff;color:#1f1f1f;border-radius:12px;padding:13px;font-size:15.5px;font-weight:600;cursor:pointer}
+  .gbtn svg{width:18px;height:18px}
+  .or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;margin:16px 0}
+  .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+  .pw{position:relative}
+  .pw input{padding-right:70px!important}
+  .pw button{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--muted);font-size:13px;cursor:pointer;padding:6px}
+  .consent{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;margin:4px 0 14px;cursor:pointer}
+  .consent input{width:19px;height:19px;flex-shrink:0;margin:1px 0 0;accent-color:var(--accent)}
+  .consent a{color:var(--accent)}
+  .amsg{font-size:14px;border-radius:12px;padding:11px 13px;margin:0 0 12px}
+  .amsg.ok{background:color-mix(in srgb,var(--accent) 12%,var(--surf));border:1.5px solid color-mix(in srgb,var(--accent) 45%,transparent)}
+  .amsg.err{background:color-mix(in srgb,#FF7A8A 12%,var(--surf));border:1.5px solid color-mix(in srgb,#FF7A8A 45%,transparent)}
+  .textlink{background:none;border:0;color:var(--muted);font-size:14px;text-decoration:underline;cursor:pointer;padding:10px 0;display:block;margin:0 auto}
+
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
     .rise{opacity:1}
@@ -406,7 +433,7 @@
     <div class="mark">GETTING BACK</div>
     <h1><span>Voltar</span><span class="two">leva tempo.</span></h1>
     <p class="lede">Um app gratuito para quem saiu da rotina e quer entrar de novo — no seu ritmo, sem cobrança de ninguém.</p>
-    <div class="foot"><button class="cta" id="start" type="button">Começar</button><a class="skip" href="../" style="text-align:center;text-decoration:none">Conhecer o Getting Back</a></div>
+    <div class="foot"><button class="cta" id="start" type="button">Começar</button><button class="skip" id="cover-login" type="button">Já tenho conta</button><a class="skip" href="../" style="text-align:center;text-decoration:none">Conhecer o Getting Back</a></div>
   </section>
 
   <section class="screen" id="s-palette">
@@ -511,6 +538,8 @@
 
     <div class="view" id="v-conf">
       <h2>Ajustes</h2>
+      <div class="sec">Conta</div>
+      <div class="card" style="margin-top:0" id="acct-card"></div>
       <div class="sec">Paleta</div>
       <div class="mini-pals" id="mini-pals"></div>
 
@@ -596,6 +625,55 @@
   <p class="small" style="margin:0">Nesta prévia o convite não sai do aparelho. Na versão instalada ele vira um link.</p>
 </div>
 
+<div class="sheet" id="asheet" role="dialog" aria-label="Entrar ou criar conta">
+  <div class="grab"></div>
+  <div class="seg wide" id="a-mode" style="margin-bottom:16px"><button type="button" data-m="login" aria-pressed="true">Entrar</button><button type="button" data-m="signup">Criar conta</button></div>
+  <button class="gbtn" id="a-google" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continuar com Google</button>
+  <div class="or">ou com e-mail</div>
+  <div id="a-msg" aria-live="polite"></div>
+  <label class="field"><span>E-mail</span><input id="a-email" type="email" inputmode="email" autocomplete="email" maxlength="120"></label>
+  <label class="field"><span>Senha</span><span class="pw"><input id="a-pass" type="password" autocomplete="current-password" maxlength="72"><button type="button" id="a-eye" aria-label="Mostrar senha">Mostrar</button></span></label>
+  <p class="small" id="a-rule" style="margin:-6px 0 12px" hidden>Mínimo de 8 caracteres, com letras e números.</p>
+  <label class="consent" id="a-consent" hidden><input type="checkbox" id="a-ok"><span>Li a <a href="../#/privacidade" target="_blank" rel="noopener">política de privacidade</a> e os <a href="../#/termos" target="_blank" rel="noopener">termos de uso</a>.</span></label>
+  <button class="cta" id="a-go" type="button">Entrar</button>
+  <button class="textlink" id="a-forgot" type="button">Esqueci minha senha</button>
+</div>
+
+<div class="sheet" id="rsheet" role="dialog" aria-label="Criar nova senha">
+  <div class="grab"></div>
+  <h3>Criar nova senha</h3>
+  <div id="r-msg" aria-live="polite"></div>
+  <label class="field"><span>Nova senha</span><input id="r-pass" type="password" autocomplete="new-password" maxlength="72"></label>
+  <label class="field"><span>Repita a senha</span><input id="r-pass2" type="password" autocomplete="new-password" maxlength="72"></label>
+  <p class="small" style="margin:-6px 0 12px">Mínimo de 8 caracteres, com letras e números.</p>
+  <button class="cta" id="r-go" type="button">Salvar nova senha</button>
+</div>
+
+<div class="sheet" id="csheet" role="dialog" aria-label="Escolher dados">
+  <div class="grab"></div>
+  <h3>Você já tem dados na conta</h3>
+  <p class="small" style="margin:-6px 0 16px">Este aparelho também tem uma rotina salva. Qual você quer manter?</p>
+  <button class="cta" id="c-remote" type="button">Usar os dados da conta</button>
+  <button class="skip" id="c-local" type="button">Manter os deste aparelho e substituir os da conta</button>
+</div>
+
+<div class="sheet" id="dsheet" role="dialog" aria-label="Diário na nuvem">
+  <div class="grab"></div>
+  <h3>Guardar o diário na nuvem?</h3>
+  <p class="small" style="margin:-6px 0 12px">Seus textos e o humor de cada dia passam a ser guardados na sua conta, em servidores do Supabase nos Estados Unidos, acessíveis só por você. Isso permite ver o diário em outro aparelho.</p>
+  <p class="small" style="margin:0 0 16px">Os áudios continuam só neste aparelho. Você pode desligar quando quiser, e aí o diário é apagado da nuvem.</p>
+  <label class="consent"><input type="checkbox" id="d-ok"><span>Autorizo guardar meu diário e meu humor na nuvem para esta finalidade.</span></label>
+  <button class="cta" id="d-go" type="button" disabled>Ligar</button>
+</div>
+
+<div class="sheet" id="xsheet" role="dialog" aria-label="Excluir conta">
+  <div class="grab"></div>
+  <h3>Excluir sua conta?</h3>
+  <p class="small" style="margin:-6px 0 12px">A conta e tudo que está guardado na nuvem são apagados na hora, sem volta. O que está neste aparelho continua aqui; para apagar também, use "Apagar todos os dados".</p>
+  <label class="field"><span>Digite EXCLUIR para confirmar</span><input id="x-conf" autocomplete="off" maxlength="10"></label>
+  <button class="cta" id="x-go" type="button" disabled style="background:#FF7A8A;color:#1a0508">Excluir conta</button>
+</div>
+
 <div class="banner" id="banner" role="alert">
   <div class="pulse"></div>
   <div class="grow"><small id="bn-k"></small><b id="bn-t"></b></div>
@@ -604,7 +682,9 @@
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script>
+<script src="../supabase.js"></script>
+<script>if(window.top!==window.self){document.body.innerHTML='<p style="font:16px sans-serif;padding:40px">Abra o Getting Back direto no navegador.</p>';throw new Error("framed");}
+
 const PALETTES = [
   {id:"ciano", name:"Ciano", desc:"Preto de verdade com ciano", chips:["#000000","#0F181C","#22D3EE"]},
   {id:"mare", name:"Maré", desc:"Escuro e calmo, para a noite", chips:["#0B2B33","#174651","#5FD3C4"]},
@@ -638,8 +718,8 @@ let S = {palette:"ciano", A:{}, habits:[], extras:{}, log:{}, journal:{}, friend
 let idx = 0, sel = [], suggested = [], range = 14;
 const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let saveWarned = false;
-function save(){ try{ localStorage.setItem("gb3", JSON.stringify(S)); }catch(e){ if(!saveWarned){ saveWarned = true; setTimeout(() => toast("Não deu para salvar neste aparelho. O que você fizer agora pode se perder ao fechar.", true), 100); } } }
+let saveWarned = false, applyingRemote = false;
+function save(){ if(!applyingRemote){ S.changedAt = Date.now(); if(typeof schedulePush === "function") schedulePush(); } try{ localStorage.setItem("gb3", JSON.stringify(S)); }catch(e){ if(!saveWarned){ saveWarned = true; setTimeout(() => toast("Não deu para salvar neste aparelho. O que você fizer agora pode se perder ao fechar.", true), 100); } } }
 function load(){
   try{
     const r = localStorage.getItem("gb3");
@@ -835,7 +915,7 @@ function drawNext(){
   }
   const nx = pend[0], diff = toMin(nx.time) - nm;
   const when = diff <= 0 ? "Agora" : diff < 60 ? "em " + diff + " min" : "em " + Math.floor(diff/60) + "h" + (diff%60 ? String(diff%60).padStart(2,"0") : "");
-  el.innerHTML = `<div class="pulse"></div><div class="grow"><small>Próximo, às ${nx.time}</small><b>${esc(nx.name)}</b></div><span class="when">${when}</span>`;
+  el.innerHTML = `<div class="pulse"></div><div class="grow"><small>Próximo, às ${esc(nx.time)}</small><b>${esc(nx.name)}</b></div><span class="when">${when}</span>`;
 }
 
 function smooth(pts, lo, hi){
@@ -899,12 +979,12 @@ function drawAgenda(){
     const ok = dn.includes(i.id);
     const row = document.createElement("div");
     row.className = "item" + (ok ? " ok" : "") + (cur && cur.id === i.id ? " cur" : "");
-    row.innerHTML = `<div class="t">${i.time || "livre"}</div><div class="rail"><i></i></div>
+    row.innerHTML = `<div class="t">${esc(i.time || "livre")}</div><div class="rail"><i></i></div>
       <div class="cellx"><button class="check" type="button" aria-pressed="${ok}"><span class="box">${CHECK}</span>
       <span style="min-width:0"><span class="hname">${esc(i.name)}${i.kind==="e"?'<span class="tag">só hoje</span>':""}</span>${i.sub?`<span class="hsub">${esc(i.sub)}</span>`:""}</span></button>
-      ${i.kind==="e"?`<button class="x" type="button" data-x="${i.id}" aria-label="Tirar do dia">Tirar</button>`:""}</div>`;
+      ${i.kind==="e"?`<button class="x" type="button" aria-label="Tirar do dia">Tirar</button>`:""}</div>`;
     row.querySelector(".check").onclick = () => toggle(i.id);
-    const xb = row.querySelector("[data-x]"); if(xb) xb.onclick = () => removeExtra(i.id);
+    const xb = row.querySelector(".x"); if(xb) xb.onclick = () => removeExtra(i.id);
     list.appendChild(row);
   });
   const c = it.filter(i => dn.includes(i.id)).length, t = it.length;
@@ -1039,11 +1119,12 @@ function drawProg(){
 
 /* ---------- ajustes ---------- */
 function drawConf(){
+  drawAccount();
   $("#mini-pals").innerHTML = PALETTES.map(p => `<button class="mini" type="button" data-id="${p.id}" aria-label="${p.name}">${p.chips.map(c=>`<i style="background:${c}"></i>`).join("")}</button>`).join("");
   $("#mini-pals").querySelectorAll(".mini").forEach(b => b.onclick = () => { setPalette(b.dataset.id); syncPals(); toast("Paleta " + PALETTES.find(p=>p.id===b.dataset.id).name + "."); });
   syncPals();
   const m = $("#manage");
-  m.innerHTML = S.habits.length ? S.habits.map(hb => `<div class="row"><div class="grow"><b>${esc(hb.name)}</b></div><input class="tin" type="time" value="${hb.time||""}" data-t="${hb.id}" aria-label="Horário"><button class="rm" type="button" data-rm="${hb.id}">Remover</button></div>`).join("")
+  m.innerHTML = S.habits.length ? S.habits.map(hb => `<div class="row"><div class="grow"><b>${esc(hb.name)}</b></div><input class="tin" type="time" value="${esc(hb.time||"")}" data-t="${esc(hb.id)}" aria-label="Horário"><button class="rm" type="button" data-rm="${esc(hb.id)}">Remover</button></div>`).join("")
     : `<p class="small" style="margin:0 0 4px">Nenhum hábito. Adicione pela tela Hoje.</p>`;
   m.querySelectorAll("[data-t]").forEach(inp => inp.onchange = () => { const hb = S.habits.find(h => h.id === inp.dataset.t); hb.time = inp.value; save(); toast(inp.value ? "Horário: " + inp.value + "." : "Sem horário."); });
   m.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => {
@@ -1100,8 +1181,9 @@ $("#seed").onclick = () => {
   }
   save(); toast("Três semanas simuladas."); tab("v-hoje", true);
 };
-$("#wipe").onclick = () => {
-  if(!confirm("Apagar hábitos, histórico e respostas? Não tem como desfazer.")) return;
+$("#wipe").onclick = async () => {
+  if(!confirm("Apagar hábitos, histórico e respostas deste aparelho? Não tem como desfazer." + (USER ? " Você também sai da conta, mas o que está na nuvem continua lá." : ""))) return;
+  if(SB && USER){ clearTimeout(pushT); USER = null; await SB.auth.signOut({scope:"local"}); }
   S = {palette:S.palette, A:{}, habits:[], extras:{}, log:{}, journal:{}, friends:[], waterIn:{}, onboarded:false, cfg:S.cfg}; save(); idb.clear(); show("s-cover");
 };
 
@@ -1281,7 +1363,7 @@ function drawHist(){
     const d = jDay(k), dt = new Date(k + "T12:00:00").toLocaleDateString("pt-BR",{weekday:"long", day:"numeric", month:"short"}).replace(".","");
     return `<div class="hday"><div class="hdate">${dt}</div>${MOMENTS.filter(m => d[m.id]).map(m => {
       const e = d[m.id];
-      return `<div class="hm"><small>${m.t}</small>${(e.mood || e.text) ? `<p>${esc([e.mood, e.text].filter(Boolean).join(". "))}</p>` : ""}${e.audio ? `<button class="play" type="button" data-a="${k}:${m.id}">Ouvir áudio, ${fmtDur(e.dur||0)}</button>` : ""}</div>`;
+      return `<div class="hm"><small>${m.t}</small>${(e.mood || e.text) ? `<p>${esc([e.mood, e.text].filter(Boolean).join(". "))}</p>` : ""}${e.audio ? `<button class="play" type="button" data-a="${esc(k + ":" + m.id)}">Ouvir áudio, ${fmtDur(e.dur||0)}</button>` : ""}</div>`;
     }).join("")}</div>`;
   }).join("");
   $("#hist").querySelectorAll("[data-a]").forEach(b => b.onclick = () => playAudio(b.dataset.a, b));
@@ -1496,7 +1578,7 @@ function buildLetter(){
     P.push(`<p>Essa semana ficou sem anotações, e tudo bem. A árvore continua do mesmo tamanho, esperando.</p><p>Se quiser recomeçar, uma frase hoje à noite já basta.</p>`);
   } else {
     P.push(`<p>Você escreveu em ${written.length} de 7 dias${written.length >= 5 ? ". Isso é constância de verdade." : written.length >= 3 ? ". Mais da metade do caminho." : ". Pouco, mas não zero."}</p>`);
-    if(top) P.push(`<p>O humor que mais apareceu foi <b>${top[0].toLowerCase()}</b>${light.length ? ", e os dias mais leves foram " + listPt(light) : ""}.</p>`);
+    if(top) P.push(`<p>O humor que mais apareceu foi <b>${esc(top[0].toLowerCase())}</b>${light.length ? ", e os dias mais leves foram " + listPt(light) : ""}.</p>`);
     P.push(`<p>Você cumpriu em média ${a1}% do seu dia${a0 || a1 ? (a1 > a0 ? ", " + (a1 - a0) + " pontos a mais que na semana anterior." : a1 < a0 ? ", um pouco menos que na semana anterior. Semana de ajuste também faz parte." : ", igual à semana anterior.") : "."}</p>`);
     if(plans.length) P.push(`<p>Coisas que você disse que queria fazer:</p>${plans.map(t => `<blockquote>${esc(t)}</blockquote>`).join("")}`);
     if(best) P.push(`<p>${/^(sábado|domingo)/.test(wd(best)) ? "No" : "Na"} ${wd(best)}, você escreveu:</p><blockquote>${esc(jDay(best.k).dia.text)}</blockquote>`);
@@ -1522,7 +1604,7 @@ function drawFriends(){
   el.innerHTML = (inc.length ? `<p class="small" style="margin:0 0 12px;color:var(--ink)">${listPt(inc)} ${inc.length > 1 ? "regaram" : "regou"} sua árvore hoje.</p>` : "") +
     S.friends.map(f => {
       const done = (f.iw || []).includes(k);
-      return `<div class="friend"><div class="av">${esc(f.name[0])}</div><div class="grow"><b>${esc(f.name)}</b><small>Árvore: ${STAGES[Math.min(STAGES.length-1, f.stage||1)][1]}</small></div><button class="water" type="button" data-f="${f.id}" ${done ? "disabled" : ""}>${done ? "Regada hoje" : "Regar"}</button></div>`;
+      return `<div class="friend"><div class="av">${esc(f.name[0])}</div><div class="grow"><b>${esc(f.name)}</b><small>Árvore: ${STAGES[Math.max(0, Math.min(STAGES.length-1, Number(f.stage)||1))][1]}</small></div><button class="water" type="button" data-f="${esc(f.id)}" ${done ? "disabled" : ""}>${done ? "Regada hoje" : "Regar"}</button></div>`;
     }).join("");
   el.querySelectorAll("[data-f]").forEach(b => b.onclick = () => {
     const f = S.friends.find(x => x.id === b.dataset.f); (f.iw = f.iw || []).push(k); save();
@@ -1571,6 +1653,194 @@ $("#sim-water").onclick = () => {
   }, 300);
 };
 $("#tg-wk").onclick = () => { S.cfg.wk = !S.cfg.wk; save(); drawConf(); toast(S.cfg.wk ? "Mensagens de fim de semana ligadas." : "Mensagens de fim de semana desligadas."); };
+
+/* ================= CONTA E SINCRONIZAÇÃO (Supabase) ================= */
+const SB_URL = "https://audizsjaopccvcgplbgt.supabase.co";
+const SB_KEY = "sb_publishable_rva_LxoFAqwlZhFoQCo-Bg_UIkedpN0";   // chave publicável; o acesso é protegido por RLS
+const SB = (window.supabase && location.protocol === "https:")
+  ? window.supabase.createClient(SB_URL, SB_KEY, {auth:{flowType:"pkce", persistSession:true, autoRefreshToken:true, detectSessionInUrl:true}})
+  : null;
+let USER = null, pushT = 0, pushing = false, lastSyncErr = 0;
+const PASS_OK = p => p.length >= 8 && /[A-Za-zÀ-ÿ]/.test(p) && /\d/.test(p);
+const EMAIL_OK = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+const APP_URL = () => location.origin + location.pathname;
+
+function openSheet2(id){ closeSheet(); setTimeout(() => { $("#scrim").classList.add("on"); document.body.classList.add("lock"); $(id).classList.add("on"); }, 60); }
+function amsg(el, kind, text){ $(el).innerHTML = text ? `<div class="amsg ${kind}" role="${kind === "err" ? "alert" : "status"}">${esc(text)}</div>` : ""; }
+function authErr(err){
+  const m = (err && (err.message || "")).toLowerCase(), code = err && (err.code || err.status);
+  if(code === 429 || m.includes("rate limit") || m.includes("too many")) return "Muitas tentativas seguidas. Espere alguns minutos e tente de novo.";
+  if(m.includes("invalid login") || m.includes("invalid credentials")) return "E-mail ou senha incorretos.";
+  if(m.includes("email not confirmed")) return "Confirme seu e-mail antes de entrar. Procure a mensagem na caixa de entrada ou no spam.";
+  if(m.includes("weak") || m.includes("password should")) return "Essa senha é fraca. Use pelo menos 8 caracteres, com letras e números, e evite senhas comuns.";
+  if(m.includes("network") || m.includes("fetch")) return "Sem conexão com o servidor. Confira a internet e tente de novo.";
+  return "Não deu certo agora. Tente de novo em instantes.";
+}
+
+/* ---- tela de entrar / criar conta ---- */
+let aMode = "login";
+function openAuth(mode){
+  if(!SB){ toast("A conta funciona na versão publicada do app.", true); return; }
+  aMode = mode || "login"; syncAuthMode(); amsg("#a-msg");
+  $("#a-pass").value = ""; $("#a-ok").checked = false;
+  openSheet2("#asheet"); setTimeout(() => $("#a-email").focus(), 450);
+}
+function syncAuthMode(){
+  $("#a-mode").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.m === aMode));
+  const up = aMode === "signup";
+  $("#a-go").textContent = up ? "Criar conta" : "Entrar";
+  $("#a-rule").hidden = !up; $("#a-consent").hidden = !up; $("#a-forgot").hidden = up;
+  $("#a-pass").setAttribute("autocomplete", up ? "new-password" : "current-password");
+}
+$("#a-mode").querySelectorAll("button").forEach(b => b.onclick = () => { aMode = b.dataset.m; syncAuthMode(); amsg("#a-msg"); });
+$("#a-eye").onclick = () => { const i = $("#a-pass"), show = i.type === "password"; i.type = show ? "text" : "password"; $("#a-eye").textContent = show ? "Ocultar" : "Mostrar"; $("#a-eye").setAttribute("aria-label", show ? "Ocultar senha" : "Mostrar senha"); };
+$("#cover-login").onclick = () => openAuth("login");
+$("#a-google").onclick = async () => {
+  if(aMode === "signup" && !$("#a-ok").checked){ amsg("#a-msg", "err", "Para criar a conta, marque que leu a política de privacidade e os termos."); return; }
+  const {error} = await SB.auth.signInWithOAuth({provider:"google", options:{redirectTo: APP_URL()}});
+  if(error) amsg("#a-msg", "err", authErr(error));
+};
+$("#a-go").onclick = async () => {
+  const email = $("#a-email").value.trim().toLowerCase(), pass = $("#a-pass").value, btn = $("#a-go");
+  if(!EMAIL_OK(email)){ amsg("#a-msg", "err", "Esse e-mail parece incompleto."); return; }
+  if(aMode === "signup"){
+    if(!PASS_OK(pass)){ amsg("#a-msg", "err", "A senha precisa ter pelo menos 8 caracteres, com letras e números."); return; }
+    if(!$("#a-ok").checked){ amsg("#a-msg", "err", "Para criar a conta, marque que leu a política de privacidade e os termos."); return; }
+  } else if(!pass){ amsg("#a-msg", "err", "Digite sua senha."); return; }
+  btn.disabled = true; const label = btn.textContent; btn.textContent = "Aguarde...";
+  try{
+    if(aMode === "signup"){
+      const {data, error} = await SB.auth.signUp({email, password: pass, options:{emailRedirectTo: APP_URL()}});
+      if(error) throw error;
+      $("#a-pass").value = "";
+      amsg("#a-msg", "ok", data.session ? "Conta criada. Você já está conectado." : "Quase lá: enviamos um link de confirmação para " + email + ". Abra o e-mail para ativar a conta.");
+      if(data.session) setTimeout(closeSheet, 1200);
+    } else {
+      const {error} = await SB.auth.signInWithPassword({email, password: pass});
+      if(error) throw error;
+      $("#a-pass").value = ""; closeSheet(); toast("Você entrou na sua conta.");
+    }
+  }catch(err){ amsg("#a-msg", "err", authErr(err)); }
+  finally{ btn.disabled = false; btn.textContent = label; }
+};
+$("#a-pass").onkeydown = e => { if(e.key === "Enter") $("#a-go").click(); };
+$("#a-forgot").onclick = async () => {
+  const email = $("#a-email").value.trim().toLowerCase();
+  if(!EMAIL_OK(email)){ amsg("#a-msg", "err", "Escreva seu e-mail no campo acima e toque de novo em 'Esqueci minha senha'."); return; }
+  const {error} = await SB.auth.resetPasswordForEmail(email, {redirectTo: APP_URL()});
+  if(error && (error.status === 429)){ amsg("#a-msg", "err", authErr(error)); return; }
+  amsg("#a-msg", "ok", "Se houver uma conta com esse e-mail, você vai receber um link para criar uma nova senha.");
+};
+$("#r-go").onclick = async () => {
+  const p1 = $("#r-pass").value, p2 = $("#r-pass2").value;
+  if(!PASS_OK(p1)){ amsg("#r-msg", "err", "A senha precisa ter pelo menos 8 caracteres, com letras e números."); return; }
+  if(p1 !== p2){ amsg("#r-msg", "err", "As duas senhas não são iguais."); return; }
+  const {error} = await SB.auth.updateUser({password: p1});
+  if(error){ amsg("#r-msg", "err", authErr(error)); return; }
+  $("#r-pass").value = $("#r-pass2").value = ""; closeSheet(); toast("Senha nova salva.");
+};
+
+/* ---- cartão da conta em Ajustes ---- */
+function drawAccount(){
+  const el = $("#acct-card");
+  if(!SB){ el.innerHTML = `<p class="small" style="margin:0">A conta serve para guardar sua rotina na nuvem e usar em outro aparelho. Ela funciona na versão publicada do app.</p>`; return; }
+  if(!USER){
+    el.innerHTML = `<p class="small" style="margin:0;color:var(--ink)">Crie uma conta para guardar sua rotina na nuvem e continuar em outro aparelho. É opcional.</p>
+      <div class="btnrow"><button class="btn2 pri" type="button" id="ac-up">Criar conta</button><button class="btn2" type="button" id="ac-in">Entrar</button></div>`;
+    $("#ac-up").onclick = () => openAuth("signup"); $("#ac-in").onclick = () => openAuth("login");
+    return;
+  }
+  const name = (USER.user_metadata && (USER.user_metadata.full_name || USER.user_metadata.name)) || "";
+  const via = (USER.app_metadata && USER.app_metadata.provider === "google") ? "Google" : "e-mail";
+  const when = S.syncedAt ? new Date(S.syncedAt).toLocaleString("pt-BR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}) : "ainda não";
+  el.innerHTML = `<div class="acct"><div class="av">${esc((name || USER.email || "?")[0].toUpperCase())}</div><div class="grow"><b>${esc(name || USER.email || "")}</b><small>Entrou com ${via}. Sincronizado: ${esc(when)}.</small></div></div>
+    <div class="switch" style="margin-top:12px"><div><span>Guardar o diário na nuvem</span><small>Textos e humor. Áudios ficam só aqui.</small></div><button class="tg" id="tg-diary" role="switch" type="button" aria-checked="${!!S.cfg.syncDiary}"></button></div>
+    <div class="btnrow"><button class="btn2" type="button" id="ac-out">Sair</button><button class="btn2 danger" type="button" id="ac-del">Excluir conta</button></div>`;
+  $("#tg-diary").onclick = () => {
+    if(S.cfg.syncDiary){ S.cfg.syncDiary = false; save(); pushNow(true).then(ok => { if(ok) toast("Diário apagado da nuvem. Continua neste aparelho."); }); drawAccount(); }
+    else { $("#d-ok").checked = false; $("#d-go").disabled = true; openSheet2("#dsheet"); }
+  };
+  $("#ac-out").onclick = async () => { await SB.auth.signOut(); toast("Você saiu da conta. Os dados deste aparelho continuam aqui."); };
+  $("#ac-del").onclick = () => { $("#x-conf").value = ""; $("#x-go").disabled = true; openSheet2("#xsheet"); };
+}
+$("#d-ok").onchange = () => { $("#d-go").disabled = !$("#d-ok").checked; };
+$("#d-go").onclick = () => { S.cfg.syncDiary = true; S.cfg.diaryConsentAt = new Date().toISOString(); save(); closeSheet(); pushNow(true).then(ok => { if(ok) toast("Diário guardado na nuvem."); }); drawAccount(); };
+$("#x-conf").oninput = () => { $("#x-go").disabled = $("#x-conf").value.trim().toUpperCase() !== "EXCLUIR"; };
+$("#x-go").onclick = async () => {
+  $("#x-go").disabled = true;
+  const {error} = await SB.rpc("excluir_minha_conta");
+  if(error){ toast("Não deu para excluir agora. Tente de novo em instantes.", true); $("#x-go").disabled = false; return; }
+  await SB.auth.signOut({scope:"local"});
+  delete S.syncedAt; delete S.syncUser; S.cfg.syncDiary = false; saveLocalOnly();
+  closeSheet(); toast("Conta excluída. Os dados deste aparelho continuam aqui.");
+};
+
+/* ---- sincronização ---- */
+function saveLocalOnly(){ applyingRemote = true; save(); applyingRemote = false; }
+function payload(){
+  const d = JSON.parse(JSON.stringify(S));
+  delete d.syncedAt; delete d.syncUser; delete d.changedAt;
+  if(!S.cfg.syncDiary){ delete d.journal; }
+  return d;
+}
+function schedulePush(){ if(!SB || !USER) return; clearTimeout(pushT); pushT = setTimeout(() => pushNow(false), 1500); }
+async function pushNow(loud){
+  if(!SB || !USER || pushing) return false;
+  pushing = true;
+  try{
+    const {error} = await SB.from("estado_usuario").upsert({user_id: USER.id, dados: payload(), diario_na_nuvem: !!S.cfg.syncDiary}, {onConflict:"user_id"});
+    if(error) throw error;
+    S.syncedAt = Date.now(); S.syncUser = USER.id; saveLocalOnly();
+    if($("#v-conf").classList.contains("on")) drawAccount();
+    return true;
+  }catch(err){
+    if(loud || Date.now() - lastSyncErr > 60000){ lastSyncErr = Date.now(); toast("Não deu para sincronizar com a nuvem. Seus dados continuam salvos neste aparelho.", true); }
+    return false;
+  }finally{ pushing = false; }
+}
+function validRemote(d){
+  return d && typeof d === "object" && !Array.isArray(d) &&
+    (!d.habits || Array.isArray(d.habits)) && (!d.log || typeof d.log === "object") &&
+    (!d.cfg || typeof d.cfg === "object") && (!d.journal || typeof d.journal === "object");
+}
+function applyRemote(row){
+  if(!validRemote(row.dados)) return false;
+  const keepJournal = S.journal || {};
+  const base = {palette:"ciano", A:{}, habits:[], extras:{}, log:{}, journal:{}, friends:[], waterIn:{}, onboarded:false, cfg:{rem:true, lead:15, snd:false, tree:true, wk:true, season:"auto"}};
+  const d = row.dados;
+  S = Object.assign(base, d);
+  S.cfg = Object.assign(base.cfg, d.cfg || {});
+  if(!row.diario_na_nuvem) S.journal = keepJournal; S.cfg.syncDiary = !!row.diario_na_nuvem;
+  S.syncedAt = new Date(row.atualizado_em).getTime(); S.syncUser = USER.id; S.changedAt = S.syncedAt;
+  saveLocalOnly(); applyPalette(S.palette);
+  if(S.onboarded) openApp(); else show("s-cover");
+  return true;
+}
+let pendingRow = null;
+async function reconcile(){
+  const {data, error} = await SB.from("estado_usuario").select("dados, diario_na_nuvem, atualizado_em").maybeSingle();
+  if(error){ toast("Não deu para buscar seus dados na nuvem agora.", true); return; }
+  if(!data){ if(S.onboarded) pushNow(false); return; }
+  const remoteAt = new Date(data.atualizado_em).getTime();
+  if(!S.onboarded){ applyRemote(data); toast("Sua rotina foi carregada da conta."); return; }
+  if(S.syncUser !== USER.id){ pendingRow = data; openSheet2("#csheet"); return; }
+  const localChanged = (S.changedAt || 0) > (S.syncedAt || 0);
+  if(remoteAt > (S.syncedAt || 0) + 1000 && !localChanged) applyRemote(data);
+  else if(localChanged) pushNow(false);
+}
+$("#c-remote").onclick = () => { closeSheet(); if(pendingRow && applyRemote(pendingRow)) toast("Usando os dados da conta."); pendingRow = null; };
+$("#c-local").onclick = () => { closeSheet(); pendingRow = null; S.syncUser = USER.id; pushNow(true).then(ok => { if(ok) toast("Dados deste aparelho salvos na conta."); }); };
+
+if(SB){
+  SB.auth.onAuthStateChange((event, session) => {
+    const was = USER && USER.id;
+    USER = session ? session.user : null;
+    if(event === "PASSWORD_RECOVERY"){ amsg("#r-msg"); openSheet2("#rsheet"); }
+    if(USER && USER.id !== was) setTimeout(reconcile, 0);
+    if(location.search.includes("code=") || location.hash.includes("access_token")) history.replaceState(null, "", APP_URL());
+    if($("#v-conf").classList.contains("on")) drawAccount();
+  });
+}
 
 /* ---------- início ---------- */
 load();

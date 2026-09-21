@@ -3,6 +3,8 @@
 <head>
 <base href="/getting-back/">
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-M9GX9btHRlsg7E4iZr9OhYiwIL8gs3N3cdKtfTZEJEw='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src https://audizsjaopccvcgplbgt.supabase.co; form-action 'self'; base-uri 'self'; object-src 'none'; frame-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Página não encontrada — Getting Back</title>
 <meta name="robots" content="noindex">
@@ -39,6 +41,8 @@
   }
   *,*::before,*::after{box-sizing:inherit}
   [hidden]{display:none!important}
+  .skiplink{position:absolute;left:-9999px;top:8px;z-index:99}
+  .skiplink:focus{left:12px}
   html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav) + env(safe-area-inset-top,0px) + 12px);-webkit-text-size-adjust:100%}
   body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   body.lock{overflow:hidden}
@@ -244,7 +248,7 @@
 </style>
 </head>
 <body>
-<a href="#conteudo" class="btn primary" style="position:absolute;left:-9999px;top:8px;z-index:99" onfocus="this.style.left='12px'" onblur="this.style.left='-9999px'">Pular para o conteúdo</a>
+<a href="#conteudo" class="btn primary skiplink">Pular para o conteúdo</a>
 
 <header id="hdr">
   <div class="in navin">
@@ -285,7 +289,7 @@
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h10M11 6l4 4-4 4"/></svg></a>
           <a class="btn ghost" href="#/como-funciona">Como funciona</a>
         </div>
-        <p class="hero-note reveal d3">Sem cadastro. Suas anotações ficam no seu aparelho.</p>
+        <p class="hero-note reveal d3">Conta opcional, com e-mail ou Google. Suas anotações ficam no seu aparelho.</p>
       </div>
       <div class="herotree reveal">
         <div class="glow"></div>
@@ -327,7 +331,7 @@
           <div class="reveal"><h3>Fim de semana leve</h3><p>No sábado e no domingo o app sugere sair, ver gente e descansar a cabeça.</p></div>
           <div class="reveal d1"><h3>Carta da semana</h3><p>Todo domingo, um resumo do que você escreveu: dias leves, planos e o que ficou.</p></div>
           <div class="reveal"><h3>Seis paletas</h3><p>Você escolhe a cor logo na entrada. Preto com ciano é o padrão.</p></div>
-          <div class="reveal d1"><h3>Sem cadastro</h3><p>Abre e usa. O que você escreve fica no seu aparelho.</p></div>
+          <div class="reveal d1"><h3>Conta opcional</h3><p>Abre e usa sem cadastro. Se quiser, entra com e-mail ou Google e continua em outro aparelho.</p></div>
         </div>
       </div>
     </div>
@@ -359,8 +363,8 @@
       <div class="sec-head reveal"><div class="eyebrow">Perguntas</div><h2>O que costumam perguntar.</h2></div>
       <div class="faq reveal">
         <details><summary>É gratuito mesmo?</summary><div class="ans">Sim. O Getting Back é gratuito e não tem plano pago para liberar recurso.</div></details>
-        <details><summary>Preciso criar conta?</summary><div class="ans">Não. Você abre, responde as perguntas e começa. Tudo fica salvo no próprio aparelho.</div></details>
-        <details><summary>Quem lê o que eu escrevo na árvore?</summary><div class="ans">Só você. As anotações e os áudios ficam guardados no seu aparelho. Amigos que regam a sua árvore veem o tamanho dela, nunca o conteúdo.</div></details>
+        <details><summary>Preciso criar conta?</summary><div class="ans">Não. Você abre, responde as perguntas e começa, e tudo fica salvo no próprio aparelho. A conta é opcional: com e-mail ou Google, ela guarda sua rotina na nuvem para você continuar em outro aparelho.</div></details>
+        <details><summary>Quem lê o que eu escrevo na árvore?</summary><div class="ans">Só você. Por padrão, as anotações e os áudios ficam no seu aparelho, mesmo com conta. Se você ligar "Guardar o diário na nuvem", os textos e o humor vão para a sua conta, acessíveis só por você; os áudios nunca saem do aparelho. Amigos que regam a sua árvore veem o tamanho dela, nunca o conteúdo.</div></details>
         <details><summary>E se eu ficar dias sem abrir?</summary><div class="ans">Nada de ruim acontece. A sequência recomeça, mas a árvore continua do tamanho que estava. O app foi feito para quem vai e volta.</div></details>
         <details><summary>Tem para Android e iPhone?</summary><div class="ans">Por enquanto o app roda pelo navegador, no celular ou no computador. As versões de loja estão em desenvolvimento.</div></details>
         <details><summary>O app substitui acompanhamento profissional?</summary><div class="ans">Não. Ele ajuda a organizar a rotina. Se o peso que você sente não é só de organização, vale conversar com alguém de confiança ou com um profissional.</div></details>
@@ -402,17 +406,24 @@
   <article class="doc">
     <div class="eyebrow">Privacidade</div>
     <h1 style="margin-top:12px">Política de privacidade</h1>
-    <p class="upd">Atualizada em setembro de 2026</p>
+    <p class="upd">Atualizada em 21 de setembro de 2026</p>
     <p class="draft">Modelo em linguagem simples. Revise com alguém que entenda de LGPD antes de publicar.</p>
-    <h2>O que fica no seu aparelho</h2>
-    <p>Respostas do questionário, hábitos, marcações, anotações da árvore e áudios ficam guardados no armazenamento do seu próprio navegador ou celular. Não enviamos esse conteúdo para nenhum servidor.</p>
-    <h2>O que chega até nós</h2>
-    <p>Só o que você mandar pelo formulário de contato: nome, e-mail, assunto e a mensagem, com o seu consentimento. Usamos isso para responder, e nada além disso.</p>
-    <p>Essas mensagens ficam armazenadas no Supabase, serviço de banco de dados que atua como operador, em servidores nos Estados Unidos.</p>
-    <h2>Amigos que regam</h2>
-    <p>Quando a função de amigos estiver ativa, quem você convidar verá apenas o estágio da sua árvore. Nunca as anotações, o humor ou os áudios.</p>
-    <h2>Apagar seus dados</h2>
-    <p>No app, em Ajustes, a opção "Apagar todos os dados" remove tudo do aparelho na hora. Para apagar uma mensagem de contato, escreva para nós pela página de contato.</p>
+    <h2>Quem é o responsável</h2>
+    <p>O Getting Back é mantido por Lucas Reis Diniz, que decide como os dados são tratados (controlador). Dúvidas e pedidos sobre seus dados vão pela <a href="#/contato">página de contato</a>.</p>
+    <h2>Sem conta: tudo no seu aparelho</h2>
+    <p>Respostas do questionário, hábitos, marcações, anotações da árvore e áudios ficam no armazenamento do seu próprio navegador ou celular. Nada disso é enviado para nós.</p>
+    <h2>Com conta</h2>
+    <p>Se você criar uma conta, guardamos seu e-mail e, quando você entra com Google, o nome e a foto que o Google compartilha. Também guardamos uma cópia da sua rotina (hábitos, marcações e ajustes) para você continuar em outro aparelho. A base legal é a execução do serviço que você pediu ao criar a conta.</p>
+    <h2>Diário na nuvem: só se você autorizar</h2>
+    <p>Textos do diário e humor podem revelar informações sobre a sua saúde, que a LGPD trata como dados sensíveis. Por isso eles só vão para a nuvem se você ligar essa opção e der consentimento específico. Você pode desligar quando quiser, e o diário é apagado da nuvem na hora. Áudios nunca saem do aparelho.</p>
+    <h2>Formulário de contato</h2>
+    <p>Nome, e-mail, assunto e mensagem, enviados com o seu consentimento, usados só para responder. Guardamos essas mensagens por até 12 meses.</p>
+    <h2>Onde ficam os dados</h2>
+    <p>Contas, rotinas sincronizadas e mensagens ficam no Supabase, que atua como operador, em servidores nos Estados Unidos, com conexão criptografada. Cada pessoa só consegue acessar os próprios dados. O login com Google é processado pelo Google.</p>
+    <h2>Seus direitos</h2>
+    <p>Você pode pedir acesso, correção ou exclusão dos seus dados. No app, em Ajustes, "Excluir conta" apaga a conta e tudo que está na nuvem na hora, e "Apagar todos os dados" limpa o aparelho. Para o resto, fale com a gente pela página de contato.</p>
+    <h2>Idade</h2>
+    <p>O app é destinado a maiores de 18 anos.</p>
     <h2>Venda de dados</h2>
     <p>Não vendemos nem compartilhamos seus dados com terceiros.</p>
   </article>
@@ -429,8 +440,12 @@
     <p>O Getting Back é um app gratuito de organização de rotina e diário pessoal. Ele pode mudar, ganhar ou perder funções ao longo do tempo.</p>
     <h2>Não é tratamento</h2>
     <p>O app não oferece diagnóstico, tratamento ou orientação médica, nutricional ou psicológica. Sugestões de hábitos são gerais. Em caso de sofrimento intenso, procure um profissional ou alguém de confiança.</p>
+    <h2>Conta</h2>
+    <p>A conta é opcional e pessoal. Você é responsável por manter sua senha em segredo. Podemos suspender contas usadas para abuso ou ataque ao serviço.</p>
     <h2>Seus dados, sua responsabilidade</h2>
-    <p>Como o conteúdo fica no seu aparelho, trocar de celular ou limpar o navegador pode apagar o histórico. Faça isso sabendo que não temos cópia.</p>
+    <p>Sem conta, o conteúdo fica só no seu aparelho: trocar de celular ou limpar o navegador pode apagar o histórico, e não temos cópia. Com conta, a rotina fica guardada na nuvem; o diário, só se você autorizar.</p>
+    <h2>Idade</h2>
+    <p>O app é destinado a maiores de 18 anos.</p>
     <h2>Uso adequado</h2>
     <p>Não use o app ou o formulário de contato para enviar conteúdo ilegal, ofensivo ou que viole direitos de outras pessoas.</p>
   </article>
@@ -470,7 +485,8 @@
   </div>
 </footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script>window.FORCE_404 = true;
+<script>if(window.top!==window.self){document.body.innerHTML='<p style="font:16px sans-serif;padding:40px">Abra o Getting Back direto no navegador.</p>';throw new Error("framed");}
+window.FORCE_404 = true;
 const APP_URL = "app/";
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -663,7 +679,7 @@ $("#cform").addEventListener("submit", e => {
     .catch(err => {
       done();
       alertBox("err", err && err.status === 400
-        ? "Algum campo não passou na validação do servidor. Confira o e-mail e o tamanho da mensagem."
+        ? "Não deu para enviar. Confira o e-mail e o tamanho da mensagem; se você já mandou mensagens há pouco, espere uma hora e tente de novo."
         : "Não deu para enviar agora. Sua mensagem continua aqui, tente de novo em instantes.");
     });
 });
