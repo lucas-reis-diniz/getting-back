@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-palette="ciano">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Getting Back</title>
+<meta name="description" content="Getting Back: app gratuito para voltar à rotina devagar, com três hábitos por vez, avisos calmos e uma árvore que cresce com o seu diário.">
+<meta name="theme-color" content="#000000" id="theme-color">
+<meta name="color-scheme" content="dark light">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Getting Back">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:title" content="Getting Back — voltar leva tempo">
+<meta property="og:description" content="Um app gratuito para retomar a rotina devagar, com uma árvore que cresce a cada anotação.">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://lucas-reis-diniz.github.io/getting-back/app/">
+<meta property="og:image" content="https://lucas-reis-diniz.github.io/getting-back/og-getting-back.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Cpath d='M32 52V30' stroke='%2322D3EE' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M32 30c0-9 6-14 15-14 0 9-6 14-15 14z' fill='%2322D3EE'/%3E%3Cpath d='M32 35c0-7-5-11-12-11 0 7 5 11 12 11z' fill='%2322D3EE' opacity='.7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000; --surf:#0A1013; --surf-2:#0F181C; --ink:#E6F7F9; --muted:#7C959B;
+    --accent:#22D3EE; --accent-ink:#00161A; --line:rgba(230,247,249,.11);
+    --display:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+    --body:"Inter","Helvetica Neue",Arial,sans-serif;
+    --calm:cubic-bezier(.22,.61,.36,1);
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  :root[data-palette="mare"]{--bg:#0B2B33;--surf:#123A44;--surf-2:#174651;--ink:#E6F1F0;--muted:#8FB3B3;--accent:#5FD3C4;--accent-ink:#06282B;--line:rgba(230,241,240,.14)}
+  :root[data-palette="mata"]{--bg:#16241B;--surf:#1E3126;--surf-2:#263E2F;--ink:#E9F0E4;--muted:#9BB29A;--accent:#D9B86A;--accent-ink:#1B2A1F;--line:rgba(233,240,228,.14)}
+  :root[data-palette="brasa"]{--bg:#1B1417;--surf:#251C20;--surf-2:#2F2429;--ink:#F3E9E6;--muted:#A08F8B;--accent:#E2522F;--accent-ink:#1B1417;--line:rgba(243,233,230,.14)}
+  :root[data-palette="amanhecer"]{--bg:#F5EDF2;--surf:#FFFFFF;--surf-2:#FBF3F7;--ink:#2B1F2E;--muted:#7A6A7D;--accent:#C2456B;--accent-ink:#FFFFFF;--line:rgba(43,31,46,.14)}
+  :root[data-palette="papel"]{--bg:#E8EBE9;--surf:#FFFFFF;--surf-2:#F3F5F4;--ink:#1C2320;--muted:#5F6B66;--accent:#2E4BD6;--accent-ink:#FFFFFF;--line:rgba(28,35,32,.14)}
+  *,*::before,*::after{box-sizing:inherit}
+  [hidden]{display:none!important}
+  html{min-height:100%;scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+  body.lock{overflow:hidden}
+  body{min-height:100%;overflow-x:hidden;margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .5s ease,color .5s ease}
+  button{font:inherit;color:inherit}
+  button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .wrap{max-width:560px;margin:0 auto;padding:20px 20px 32px;min-height:100%;display:flex;flex-direction:column}
+  body.in-app .wrap{padding-bottom:120px}
+  h1,h2{font-family:var(--display);font-weight:800;letter-spacing:-.02em;margin:0}
+  h1{font-size:clamp(38px,11vw,56px);line-height:.95}
+  h2{font-size:clamp(23px,6.2vw,30px);line-height:1.15;font-weight:600}
+  p{margin:.6em 0}
+  .lede{color:var(--muted);font-size:17px;max-width:38ch}
+
+  .top{display:flex;align-items:center;gap:12px;min-height:34px;margin-bottom:22px}
+  .back{background:none;border:0;color:var(--muted);font-size:15px;padding:6px 10px 6px 0;cursor:pointer}
+  .track{flex:1;height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+  .track span{display:block;height:100%;width:0;background:var(--accent);transition:width .5s var(--calm)}
+  .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  .screen{display:none;flex:1;flex-direction:column}
+  .screen.on{display:flex;animation:fade .6s var(--calm) both}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+
+  .cover{justify-content:center;gap:4px;padding-bottom:40px}
+  .mark{font-family:var(--display);font-size:13px;letter-spacing:.14em;color:var(--muted);margin-bottom:26px}
+  .cover h1 span{display:block}
+  .cover h1 .two{color:var(--accent)}
+  .cover .lede{margin-top:18px}
+
+  .palettes{display:grid;gap:12px;margin:26px 0 8px}
+  .pal{display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;background:var(--surf);border:1.5px solid var(--line);border-radius:16px;padding:14px;transition:border-color .3s ease}
+  .pal[aria-pressed="true"]{border-color:var(--accent)}
+  .chips{display:flex;flex-shrink:0}
+  .chips i{width:26px;height:38px;display:block;border-radius:5px;margin-right:-9px;border:1.5px solid rgba(128,128,128,.3)}
+  .chips i:last-child{margin-right:0}
+  .pal b{display:block;font-family:var(--display);font-size:18px;font-weight:600}
+  .pal small{color:var(--muted);font-size:13.5px}
+
+  .q{margin:4px 0 22px}
+  .q .hint{color:var(--muted);font-size:14.5px;margin-top:8px}
+  .opts{display:grid;gap:10px}
+  .opt{display:flex;align-items:center;gap:13px;width:100%;text-align:left;cursor:pointer;background:var(--surf);border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;font-size:16px;line-height:1.35;transition:border-color .25s ease,background .25s ease}
+  .opt[aria-pressed="true"]{border-color:var(--accent);background:var(--surf-2)}
+  .dot{flex-shrink:0;width:19px;height:19px;border-radius:50%;border:1.5px solid var(--muted);position:relative}
+  .opt[aria-pressed="true"] .dot{border-color:var(--accent)}
+  .opt[aria-pressed="true"] .dot::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:var(--accent)}
+  .multi .dot{border-radius:6px}
+  .multi .opt[aria-pressed="true"] .dot::after{border-radius:2px}
+
+  .foot{margin-top:auto;padding-top:26px}
+  .cta{width:100%;border:0;border-radius:14px;padding:17px;cursor:pointer;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-size:17px;font-weight:600}
+  .cta[disabled]{opacity:.38;cursor:not-allowed}
+  .skip{display:block;width:100%;background:none;border:0;color:var(--muted);font-size:15px;padding:14px;cursor:pointer}
+
+  .card{background:var(--surf);border:1.5px solid var(--line);border-radius:18px;padding:20px;margin-top:14px}
+  .card h3{font-family:var(--display);font-size:15px;font-weight:600;margin:0 0 14px;color:var(--muted)}
+  .habit{display:flex;gap:13px;padding:13px 0;border-top:1px solid var(--line)}
+  .habit:first-of-type{border-top:0;padding-top:0}
+  .habit .n{font-family:var(--display);font-size:15px;color:var(--accent);width:16px;flex-shrink:0;padding-top:2px}
+  .habit b{font-weight:600;font-size:16.5px}
+  .habit small{display:block;color:var(--muted);font-size:14px;margin-top:3px}
+  .note{color:var(--muted);font-size:14.5px;margin-top:18px;padding-left:14px;border-left:2px solid var(--accent)}
+
+  /* ---------- respiro (abertura) ---------- */
+  .splash{position:fixed;inset:0;z-index:20;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:34px;padding:30px;text-align:center;cursor:pointer}
+  .splash.on{display:flex}
+  .splash.out{opacity:0;transition:opacity .9s ease}
+  .breath{width:150px;height:150px;border-radius:50%;position:relative}
+  .breath::before,.breath::after{content:"";position:absolute;inset:0;border-radius:50%}
+  .breath::before{background:radial-gradient(circle,color-mix(in srgb,var(--accent) 45%,transparent) 0%,transparent 70%);animation:inhale 4.2s ease-in-out infinite}
+  .breath::after{border:1.5px solid var(--accent);opacity:.7;animation:inhale 4.2s ease-in-out infinite}
+  @keyframes inhale{0%{transform:scale(.55);opacity:.35}50%{transform:scale(1);opacity:.9}100%{transform:scale(.55);opacity:.35}}
+  .splash p{margin:0;font-family:var(--display);font-size:24px;font-weight:600;letter-spacing:-.01em;max-width:18ch;opacity:0;animation:fade 1.4s .5s ease both}
+  .splash small{color:var(--muted);font-size:14.5px;opacity:0;animation:fade 1.4s 1.1s ease both}
+
+  /* ---------- entrada calma dos blocos ---------- */
+  .rise{opacity:0}
+  .entering .rise{animation:rise .9s var(--calm) both;animation-delay:calc(var(--i,0) * 110ms)}
+  .entered .rise{opacity:1}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  /* ---------- app ---------- */
+  .view{display:none}
+  .view.on{display:block;animation:fade .5s var(--calm) both}
+  .greet{color:var(--muted);font-size:15px;margin:4px 0 0}
+
+  .hero{display:flex;align-items:center;gap:22px;margin:18px 0 4px}
+  .ringwrap{position:relative;width:132px;height:132px;flex-shrink:0}
+  .glow{position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 30%,transparent),transparent 70%);animation:glow 6s ease-in-out infinite}
+  @keyframes glow{0%,100%{transform:scale(.9);opacity:.35}50%{transform:scale(1.06);opacity:.8}}
+  .ringwrap svg{position:relative;width:100%;height:100%;transform:rotate(-90deg)}
+  .ringwrap .bgc{stroke:var(--line)}
+  .ringwrap .fgc{stroke:var(--accent);transition:stroke-dashoffset 1.6s var(--calm)}
+  .ringtxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ringtxt b{font-family:var(--display);font-size:30px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+  .ringtxt span{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .streak b{display:block;font-family:var(--display);font-weight:800;font-size:64px;line-height:.85;letter-spacing:-.04em;color:var(--accent);font-variant-numeric:tabular-nums}
+  .streak span{display:block;font-family:var(--display);font-size:18px;font-weight:600;margin-top:8px}
+  .streak small{display:block;color:var(--muted);font-size:14px;margin-top:3px;line-height:1.35}
+
+  .next{display:flex;align-items:center;gap:14px;margin-top:18px;background:var(--surf);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px}
+  .pulse{flex-shrink:0;width:10px;height:10px;border-radius:50%;background:var(--accent);position:relative}
+  .pulse::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid var(--accent);animation:ping 2.8s ease-out infinite}
+  @keyframes ping{0%{transform:scale(.5);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+  .next .grow{flex:1;min-width:0}
+  .next b{display:block;font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .next small{color:var(--muted);font-size:13.5px}
+  .next .when{font-family:var(--display);font-weight:600;font-size:17px;color:var(--accent);font-variant-numeric:tabular-nums}
+
+  .chart-card{padding:18px 16px 14px}
+  .chart-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px}
+  .chart-head h3{margin:0 0 2px;color:var(--ink);font-size:17px}
+  .chart-head small{color:var(--muted);font-size:13.5px}
+  .seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:2px;flex-shrink:0}
+  .seg button{background:none;border:0;border-radius:8px;padding:5px 10px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .3s ease}
+  .seg button[aria-pressed="true"]{background:var(--surf-2);color:var(--ink)}
+  #chart{width:100%;height:auto;display:block;overflow:visible;margin-top:8px}
+  #chart .grid{stroke:var(--line);stroke-width:1}
+  #chart .line{fill:none;stroke:var(--accent);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  #chart .area{opacity:0;transition:opacity 1.4s ease .6s}
+  #chart.drawn .area{opacity:1}
+  #chart .pt{fill:var(--bg);stroke:var(--accent);stroke-width:2}
+  #chart .now{fill:var(--accent)}
+  #chart .nowring{fill:none;stroke:var(--accent);animation:ping 2.8s ease-out infinite;transform-box:fill-box;transform-origin:center}
+  #chart text{fill:var(--muted);font-size:10.5px;font-family:var(--body)}
+  .delta{display:flex;gap:18px;margin-top:10px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+  .delta b{display:block;font-family:var(--display);font-size:20px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+  .agenda-head{display:flex;align-items:center;justify-content:space-between;margin:28px 0 10px}
+  .agenda-head h3{font-family:var(--display);font-size:17px;font-weight:600;margin:0}
+  .addbtn{border:1.5px solid var(--line);background:var(--surf);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px}
+  .addbtn svg{width:14px;height:14px}
+  .tl{position:relative}
+  .item{display:grid;grid-template-columns:52px 18px 1fr;align-items:stretch;min-height:60px}
+  .item .t{font-family:var(--display);font-size:14.5px;color:var(--muted);padding-top:18px;font-variant-numeric:tabular-nums}
+  .item .rail{position:relative}
+  .item .rail::before{content:"";position:absolute;left:8px;top:0;bottom:0;width:1.5px;background:var(--line)}
+  .item:first-child .rail::before{top:24px}
+  .item:last-child .rail::before{bottom:calc(100% - 24px)}
+  .item .rail i{position:absolute;left:3.5px;top:20px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:1.5px solid var(--muted);transition:all .5s var(--calm)}
+  .item.ok .rail i{background:var(--accent);border-color:var(--accent)}
+  .item.cur .rail i{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
+  .item.cur .t{color:var(--accent)}
+  .check{display:flex;align-items:center;gap:13px;width:100%;text-align:left;cursor:pointer;background:var(--surf);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin:5px 0;transition:background .5s var(--calm),border-color .5s var(--calm)}
+  .item.cur .check{border-color:color-mix(in srgb,var(--accent) 55%,transparent)}
+  .box{flex-shrink:0;width:24px;height:24px;border-radius:8px;border:2px solid var(--muted);display:grid;place-items:center;transition:all .5s var(--calm)}
+  .box svg{width:14px;height:14px}
+  .box path{stroke-dasharray:16;stroke-dashoffset:16;transition:stroke-dashoffset .6s var(--calm) .1s}
+  .check[aria-pressed="true"]{background:var(--surf-2)}
+  .check[aria-pressed="true"] .box{background:var(--accent);border-color:var(--accent)}
+  .check[aria-pressed="true"] .box path{stroke-dashoffset:0}
+  .check[aria-pressed="true"] .hname{color:var(--muted)}
+  .hname{font-weight:600;font-size:15.5px;display:block;transition:color .5s ease}
+  .hsub{display:block;color:var(--muted);font-size:13px;margin-top:1px}
+  .tag{font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin-left:6px;font-weight:500;vertical-align:1px}
+  .x{margin-left:auto;background:none;border:0;color:var(--muted);font-size:13px;padding:4px 2px;cursor:pointer;flex-shrink:0}
+  .msg{color:var(--muted);font-size:14.5px;margin:16px 2px 0}
+
+  .sec{font-family:var(--display);font-size:15px;font-weight:600;color:var(--muted);margin:30px 0 12px}
+  .heat{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .heat i{aspect-ratio:1;border-radius:7px;background:var(--line)}
+  .heat i[data-l="1"]{background:color-mix(in srgb,var(--accent) 35%,transparent)}
+  .heat i[data-l="2"]{background:color-mix(in srgb,var(--accent) 65%,transparent)}
+  .heat i[data-l="3"]{background:var(--accent)}
+  .heat i.today{outline:2px solid var(--ink);outline-offset:1px}
+  .heat-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;font-size:11.5px;color:var(--muted);text-align:center;margin-bottom:6px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+  .stat{background:var(--surf);border:1.5px solid var(--line);border-radius:16px;padding:16px}
+  .stat b{display:block;font-family:var(--display);font-size:32px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+  .stat span{font-size:13.5px;color:var(--muted)}
+  .row{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
+  .row:first-child{border-top:0}
+  .row .grow{flex:1;min-width:0}
+  .row .grow b{display:block;font-weight:600;font-size:15.5px}
+  .row .grow small{color:var(--muted);font-size:13px}
+  .bar14{display:flex;gap:3px;margin-top:7px}
+  .bar14 i{flex:1;height:6px;border-radius:2px;background:var(--line)}
+  .bar14 i.on{background:var(--accent)}
+  .num{font-family:var(--display);font-weight:600;font-size:15px;color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .mini-pals{display:flex;gap:10px;flex-wrap:wrap}
+  .mini{width:48px;height:48px;border-radius:14px;border:2px solid var(--line);cursor:pointer;padding:0;overflow:hidden;display:flex}
+  .mini i{flex:1}
+  .mini[aria-pressed="true"]{border-color:var(--ink)}
+  .rm{background:none;border:1.5px solid var(--line);border-radius:10px;padding:7px 11px;font-size:13px;color:var(--muted);cursor:pointer}
+  .tin{background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;color:var(--ink);font:inherit;font-size:14px;color-scheme:dark light}
+  .opt-sel{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{border:1.5px solid var(--line);background:var(--surf);border-radius:999px;padding:9px 14px;font-size:14px;cursor:pointer;transition:all .3s ease}
+  .pill[aria-pressed="true"]{border-color:var(--accent);background:var(--surf-2)}
+  .switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
+  .switch:first-child{border-top:0}
+  .switch span{font-size:15.5px}
+  .switch small{display:block;color:var(--muted);font-size:13px}
+  .tg{width:46px;height:28px;border-radius:999px;background:var(--line);border:0;position:relative;cursor:pointer;flex-shrink:0;transition:background .4s ease}
+  .tg::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--ink);transition:transform .4s var(--calm)}
+  .tg[aria-checked="true"]{background:var(--accent)}
+  .tg[aria-checked="true"]::after{transform:translateX(18px);background:var(--accent-ink)}
+  .link{display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:15px 0;font-size:15.5px;cursor:pointer}
+  .link.danger{color:var(--accent)}
+  .small{font-size:13.5px;color:var(--muted);margin-top:8px}
+
+  /* folha de adicionar */
+  .scrim{position:fixed;inset:0;z-index:15;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .5s ease}
+  .scrim.on{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:16;max-width:560px;margin:0 auto;background:var(--surf);border:1.5px solid var(--line);border-bottom:0;border-radius:22px 22px 0 0;padding:10px 20px calc(22px + env(safe-area-inset-bottom,0px));transform:translateY(105%);transition:transform .6s var(--calm)}
+  .sheet.on{transform:none}
+  .grab{width:38px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 16px}
+  .sheet h3{font-family:var(--display);font-size:20px;font-weight:600;margin:0 0 16px}
+  .field{display:block;margin-bottom:14px}
+  .field span{display:block;font-size:13.5px;color:var(--muted);margin-bottom:6px}
+  .field input{width:100%;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;color:var(--ink);font:inherit;font-size:16px;color-scheme:dark light}
+  .field input::placeholder{color:var(--muted)}
+  .seg.wide{width:100%}
+  .seg.wide button{flex:1;padding:10px;font-size:14.5px}
+
+  /* aviso */
+  .banner{position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:18;max-width:536px;margin:0 auto;background:var(--surf-2);border:1.5px solid color-mix(in srgb,var(--accent) 50%,transparent);border-radius:16px;padding:14px 14px 14px 16px;display:flex;align-items:center;gap:13px;transform:translateY(-140%);transition:transform .7s var(--calm);box-shadow:0 12px 40px rgba(0,0,0,.35)}
+  .banner.on{transform:none}
+  .banner .grow{flex:1;min-width:0}
+  .banner small{display:block;color:var(--accent);font-size:12.5px;font-weight:600}
+  .banner b{display:block;font-size:15.5px;font-weight:600}
+  .banner button{border:0;border-radius:10px;padding:9px 13px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:14px;cursor:pointer;flex-shrink:0}
+  .banner .later{background:none;color:var(--muted);padding:9px 6px}
+
+  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:none;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+  body.in-app .tabs{display:block}
+  .tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+  .tab{background:none;border:0;padding:12px 0 14px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12.5px;color:var(--muted);cursor:pointer;transition:color .3s ease}
+  .tab svg{width:22px;height:22px}
+  .tab[aria-current="page"]{color:var(--ink)}
+  .tab[aria-current="page"] svg{color:var(--accent)}
+  .toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:12px;font-size:14.5px;font-weight:500;pointer-events:none;transition:all .5s var(--calm);z-index:19;max-width:calc(100% - 40px);text-align:center}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+  .toast.err{background:#FF7A8A;color:#1a0508}
+  .item .cellx{display:flex;align-items:center;gap:6px}
+  .item .cellx .check{flex:1;min-width:0}
+
+  /* ---------- árvore ---------- */
+  .headrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .treechip{display:flex;align-items:center;gap:6px;background:var(--surf);border:1.5px solid var(--line);border-radius:999px;padding:5px 12px 5px 9px;cursor:pointer;position:relative;flex-shrink:0}
+  .treechip svg{width:18px;height:18px;color:var(--accent)}
+  .treechip b{font-family:var(--display);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+  .treechip.wait::after{content:"";position:absolute;top:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:var(--accent);animation:soft 2.8s ease-in-out infinite}
+  @keyframes soft{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+  .nudge{display:flex;align-items:center;gap:14px;width:100%;text-align:left;margin-top:12px;background:color-mix(in srgb,var(--accent) 9%,var(--surf));border:1.5px solid color-mix(in srgb,var(--accent) 35%,transparent);border-radius:16px;padding:14px 16px;cursor:pointer}
+  .nudge svg{width:30px;height:30px;color:var(--accent);flex-shrink:0}
+  .nudge b{display:block;font-weight:600;font-size:15.5px}
+  .nudge small{color:var(--muted);font-size:13.5px}
+  .treetop{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+  .treetop .greet{margin-top:4px}
+  .tstreak{text-align:right;flex-shrink:0}
+  .tstreak b{display:block;font-family:var(--display);font-size:40px;font-weight:800;line-height:.9;color:var(--accent);font-variant-numeric:tabular-nums}
+  .tstreak span{font-size:13px;color:var(--muted)}
+  .treebox{position:relative;margin:6px -10px 0;overflow:hidden}
+  .tglow{position:absolute;left:50%;top:42%;width:78%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 24%,transparent),transparent 65%);opacity:.25;transition:opacity 2.5s ease;animation:tglow 7s ease-in-out infinite;pointer-events:none}
+  @keyframes tglow{0%,100%{transform:translate(-50%,-50%) scale(.92)}50%{transform:translate(-50%,-50%) scale(1.05)}}
+  #tree{position:relative;width:100%;height:auto;display:block;max-height:50vh;overflow:visible}
+  #tree .ground{fill:var(--line)}
+  #tree .trunk line{stroke:color-mix(in srgb,var(--muted) 72%,var(--ink));stroke-linecap:round}
+  #tree .leaves ellipse{fill:var(--accent)}
+  #tree .flowers circle{fill:color-mix(in srgb,#FFB3C7 70%,var(--ink))}
+  #tree .sway{transform-box:view-box;transform-origin:150px 289px;animation:sway 9s ease-in-out infinite}
+  @keyframes sway{0%,100%{transform:rotate(-.9deg)}50%{transform:rotate(.9deg)}}
+  .stagebar{margin-top:4px}
+  .stagebar .track{height:4px}
+  .stagebar small{display:block;color:var(--muted);font-size:13.5px;margin-top:8px}
+  .moments{display:grid;gap:10px}
+  .moment{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--surf);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer;transition:border-color .5s var(--calm)}
+  .moment .grow{flex:1;min-width:0}
+  .moment b{display:block;font-weight:600;font-size:15.5px}
+  .moment small{display:block;color:var(--muted);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .moment .mi{flex-shrink:0;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;color:var(--muted);transition:all .5s var(--calm)}
+  .moment .mi svg{width:16px;height:16px}
+  .moment.done{border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+  .moment.done .mi{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .moment.suggest .mi{border-color:var(--accent);color:var(--accent)}
+  .sheet{max-height:90vh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  #j-text{width:100%;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;color:var(--ink);font:inherit;font-size:16px;resize:none;line-height:1.5}
+  #j-text::placeholder{color:var(--muted)}
+  .rec{display:flex;align-items:center;gap:12px;margin:12px 0 4px;min-height:46px}
+  .recbtn{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:10px 16px;font-size:14.5px;cursor:pointer;flex-shrink:0}
+  .recbtn svg{width:16px;height:16px;color:var(--accent)}
+  .rectime{font-family:var(--display);font-variant-numeric:tabular-nums;font-size:17px;flex:1}
+  .rec audio{flex:1;min-width:0;height:38px}
+  .hday{padding:14px 0;border-top:1px solid var(--line)}
+  .hday:first-child{border-top:0;padding-top:0}
+  .hdate{font-family:var(--display);font-weight:600;font-size:15px}
+  .hm{margin-top:8px}
+  .hm small{color:var(--muted);font-size:12.5px}
+  .hm p{margin:2px 0 0;font-size:15px}
+  .play{margin-top:6px;border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
+  .leafp{position:absolute;width:9px;height:5px;border-radius:50%;background:var(--accent);pointer-events:none;animation:floatup 3s ease-out forwards}
+  @keyframes floatup{0%{opacity:0;transform:translate(0,0) rotate(0)}15%{opacity:.9}100%{opacity:0;transform:translate(var(--dx),-130px) rotate(var(--r))}}
+
+  /* humor no gráfico */
+  .moodstrip{display:grid;gap:2px;padding:0 calc(10/320*100%) 0 calc(26/320*100%);margin-top:6px}
+  .moodstrip i{height:8px;border-radius:3px;background:var(--line);transition:background .6s ease}
+  .m5{background:var(--accent)!important}
+  .m4{background:color-mix(in srgb,var(--accent) 55%,var(--surf))!important}
+  .m3{background:color-mix(in srgb,var(--muted) 55%,var(--surf))!important}
+  .m2{background:color-mix(in srgb,#E8A33D 75%,var(--surf))!important}
+  .m1{background:color-mix(in srgb,#D0587E 75%,var(--surf))!important}
+  .moodleg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:12px;color:var(--muted)}
+  .moodleg span{display:flex;align-items:center;gap:5px}
+  .moodleg i{width:9px;height:9px;border-radius:3px;display:block}
+  .insight{font-size:13.5px;color:var(--ink);margin:10px 0 0;padding-left:12px;border-left:2px solid var(--accent)}
+
+  /* fim de semana */
+  .weekend{background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 14%,var(--surf)),var(--surf) 70%)}
+  .weekend .wk-day{font-family:var(--display);font-size:13.5px;font-weight:600;color:var(--accent)}
+  .weekend p{font-family:var(--display);font-size:20px;font-weight:600;line-height:1.25;margin:6px 0 14px;letter-spacing:-.01em}
+  .weekend .opt-sel{gap:8px}
+  .weekend .pill{background:var(--bg)}
+  .weekend .pill[disabled]{opacity:.45;cursor:default}
+
+  /* carta e amigos */
+  .season{display:inline-block;font-size:12.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 9px;margin-top:6px}
+  .lettrbtn{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:16px;background:var(--surf);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer;text-align:left}
+  .lettrbtn b{display:block;font-weight:600;font-size:15.5px}
+  .lettrbtn small{color:var(--muted);font-size:13.5px}
+  .lettrbtn svg{width:22px;height:22px;color:var(--accent);flex-shrink:0}
+  .letter h3{margin-bottom:4px}
+  .letter .ldate{color:var(--muted);font-size:13.5px;margin:0 0 16px}
+  .letter p{font-size:16px;line-height:1.6;margin:0 0 12px}
+  .letter blockquote{margin:0 0 12px;padding:2px 0 2px 14px;border-left:2px solid var(--accent);color:var(--muted);font-size:15px}
+  .letter .sign{color:var(--muted);font-size:14.5px;margin-top:18px}
+  .friend{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+  .friend:first-child{border-top:0;padding-top:0}
+  .av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--surf-2);border:1.5px solid var(--line);font-family:var(--display);font-weight:600;font-size:15px;flex-shrink:0}
+  .friend .grow{flex:1;min-width:0}
+  .friend b{display:block;font-weight:600;font-size:15px}
+  .friend small{color:var(--muted);font-size:13px}
+  .water{border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:7px 13px;font-size:13.5px;cursor:pointer;flex-shrink:0}
+  .water[disabled]{opacity:.5;cursor:default}
+  .code{font-family:var(--display);font-size:30px;font-weight:800;letter-spacing:.12em;text-align:center;padding:16px;border:1.5px dashed var(--line);border-radius:14px;margin:6px 0 14px}
+  .dropp{position:absolute;width:6px;height:9px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:color-mix(in srgb,#7fd6ff 80%,var(--ink));pointer-events:none;animation:fall 1.6s ease-in forwards}
+  @keyframes fall{0%{opacity:0;transform:translateY(-30px)}20%{opacity:.9}100%{opacity:0;transform:translateY(140px)}}
+  .fallleaf{position:absolute;width:8px;height:5px;border-radius:50%;pointer-events:none;animation:drift 7s ease-in-out forwards}
+  @keyframes drift{0%{opacity:0;transform:translate(0,0) rotate(0)}10%{opacity:.85}100%{opacity:0;transform:translate(var(--dx),150px) rotate(var(--r))}}
+
+  /* estações */
+  #tree.s-outono .leaves ellipse{fill:#E39B3F}
+  #tree.s-outono .leaves ellipse:nth-child(3n){fill:#D8663A}
+  #tree.s-outono .leaves ellipse:nth-child(4n){fill:#EFC15A}
+  #tree.s-inverno .leaves ellipse{fill:color-mix(in srgb,var(--accent) 40%,#d5e6ec)}
+  #tree.s-verao .leaves ellipse:nth-child(3n){fill:color-mix(in srgb,var(--accent) 70%,#3ccf7e)}
+  #tree.s-primavera .flowers circle{fill:#FFB3C7}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    .rise{opacity:1}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top" id="top" hidden>
+    <button class="back" id="back" type="button">Voltar</button>
+    <div class="track"><span id="bar"></span></div>
+    <div class="count" id="count"></div>
+  </div>
+
+  <section class="screen cover on" id="s-cover">
+    <div class="mark">GETTING BACK</div>
+    <h1><span>Voltar</span><span class="two">leva tempo.</span></h1>
+    <p class="lede">Um app gratuito para quem saiu da rotina e quer entrar de novo — no seu ritmo, sem cobrança de ninguém.</p>
+    <div class="foot"><button class="cta" id="start" type="button">Começar</button><a class="skip" href="../" style="text-align:center;text-decoration:none">Conhecer o Getting Back</a></div>
+  </section>
+
+  <section class="screen" id="s-palette">
+    <h2>Escolha como o app vai parecer</h2>
+    <p class="lede" style="margin-top:10px">Você vai abrir isso todo dia. Pegue a que te dá vontade de abrir.</p>
+    <div class="palettes" id="palettes"></div>
+    <div class="foot"><button class="cta" id="palette-next" type="button">Usar esta</button></div>
+  </section>
+
+  <section class="screen" id="s-quiz">
+    <div class="q"><h2 id="q-title"></h2><p class="hint" id="q-hint"></p></div>
+    <div class="opts" id="q-opts"></div>
+    <div class="foot"><button class="cta" id="q-next" type="button" disabled>Continuar</button></div>
+  </section>
+
+  <section class="screen" id="s-done">
+    <h2>Seu ponto de partida</h2>
+    <p class="lede" id="done-lede" style="margin-top:10px"></p>
+    <div class="card"><h3>Comece por estes três</h3><div id="habits"></div></div>
+    <p class="note" id="done-note"></p>
+    <div class="foot">
+      <button class="cta" id="go-app" type="button">Começar minha rotina</button>
+      <button class="skip" id="redo" type="button">Refazer as perguntas</button>
+    </div>
+  </section>
+
+  <!-- ===== APP ===== -->
+  <section class="screen" id="s-app">
+
+    <div class="view on" id="v-hoje">
+      <div class="headrow rise" style="--i:0"><p class="greet" id="greet"></p><button class="treechip" id="treechip" type="button"></button></div>
+
+      <div class="hero rise" style="--i:1">
+        <div class="ringwrap">
+          <div class="glow"></div>
+          <svg viewBox="0 0 132 132"><circle class="bgc" cx="66" cy="66" r="56" fill="none" stroke-width="9"/><circle class="fgc" id="ring" cx="66" cy="66" r="56" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="351.86" stroke-dashoffset="351.86"/></svg>
+          <div class="ringtxt"><b id="ring-n">0%</b><span id="ring-l">de hoje</span></div>
+        </div>
+        <div class="streak"><b id="streak-n">0</b><span id="streak-l"></span><small id="streak-s"></small></div>
+      </div>
+
+      <div class="next rise" style="--i:2" id="next"></div>
+      <button class="nudge rise" style="--i:2" id="nudge" type="button" hidden></button>
+      <button class="nudge rise" style="--i:2" id="letter-nudge" type="button" hidden></button>
+      <div class="card weekend rise" style="--i:2" id="weekend" hidden></div>
+
+      <div class="card chart-card rise" style="--i:3">
+        <div class="chart-head">
+          <div><h3>Sua evolução</h3><small id="chart-sub">Quanto do dia você cumpriu</small></div>
+          <div class="seg" id="range">
+            <button type="button" data-r="7">7d</button><button type="button" data-r="14" aria-pressed="true">14d</button><button type="button" data-r="30">30d</button>
+          </div>
+        </div>
+        <svg id="chart" viewBox="0 0 320 150" role="img" aria-label="Gráfico de evolução"></svg>
+        <div class="moodstrip" id="moodstrip"></div>
+        <div class="moodleg" id="moodleg"></div>
+        <p class="insight" id="mood-insight" hidden></p>
+        <div class="delta" id="delta"></div>
+      </div>
+
+      <div class="agenda-head rise" style="--i:4">
+        <h3>Seu dia</h3>
+        <button class="addbtn" id="open-add" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>Adicionar</button>
+      </div>
+      <div class="tl rise" style="--i:5" id="agenda"></div>
+      <p class="msg rise" style="--i:6" id="today-msg"></p>
+    </div>
+
+    <div class="view" id="v-arvore">
+      <div class="treetop">
+        <div><h2 id="stage-name">Raminho</h2><p class="greet" id="stage-sub"></p></div>
+        <div class="tstreak"><b id="t-streak">0</b><span id="t-streak-l">dias seguidos</span><br><span class="season" id="season-tag" hidden></span></div>
+      </div>
+      <div class="treebox" id="treebox">
+        <div class="tglow" id="tglow"></div>
+        <svg id="tree" viewBox="-20 30 340 272" role="img" aria-label="Sua árvore"><ellipse class="ground" cx="150" cy="290" rx="118" ry="6"/><g class="sway"><g id="tree-g"></g></g></svg>
+      </div>
+      <div class="stagebar"><div class="track"><span id="stage-bar"></span></div><small id="stage-next"></small></div>
+      <button class="lettrbtn" id="open-letter" type="button"><div><b id="lt-title">Carta da semana</b><small id="lt-sub">O que as suas anotações dizem sobre a semana</small></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m4.5 7 7.5 6 7.5-6"/></svg></button>
+      <div class="sec">Hoje</div>
+      <div class="moments" id="moments"></div>
+      <p class="small">Suas anotações ficam só neste aparelho. Se você faltar um dia, a árvore não murcha: ela só espera.</p>
+      <div class="sec">Quem rega com você</div>
+      <div class="card" style="margin-top:0"><div id="friends"></div><button class="addbtn" id="open-invite" type="button" style="margin-top:12px"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>Convidar alguém</button></div>
+      <div class="sec" id="hist-title">Dias anteriores</div>
+      <div class="card" style="margin-top:0" id="hist"></div>
+    </div>
+
+    <div class="view" id="v-prog">
+      <h2>Progresso</h2>
+      <div class="stats">
+        <div class="stat"><b id="st-days">0</b><span>dias ativos no total</span></div>
+        <div class="stat"><b id="st-best">0</b><span>maior sequência</span></div>
+      </div>
+      <div class="sec">Últimas quatro semanas</div>
+      <div class="heat-days" id="heat-days"></div>
+      <div class="heat" id="heat"></div>
+      <p class="small">Quanto mais forte a cor, mais do dia foi cumprido.</p>
+      <div class="sec">Por hábito, últimos 14 dias</div>
+      <div class="card" style="margin-top:0" id="per-habit"></div>
+    </div>
+
+    <div class="view" id="v-conf">
+      <h2>Ajustes</h2>
+      <div class="sec">Paleta</div>
+      <div class="mini-pals" id="mini-pals"></div>
+
+      <div class="sec">Hábitos de todo dia</div>
+      <div class="card" style="margin-top:0"><div id="manage"></div><p class="small" id="limit-msg"></p></div>
+
+      <div class="sec">Avisos</div>
+      <div class="card" style="margin-top:0">
+        <div class="switch"><div><span>Avisar antes</span><small>Quando algo com horário estiver chegando</small></div><button class="tg" id="tg-rem" role="switch" type="button"></button></div>
+        <div class="switch" id="lead-row"><div><span>Com quanto tempo</span></div><div class="opt-sel" id="lead-sel"></div></div>
+        <div class="switch"><div><span>Lembrar da árvore</span><small>Às 8h30 para o plano, às 21h para o dia</small></div><button class="tg" id="tg-tree" role="switch" type="button"></button></div>
+        <div class="switch"><div><span>Som suave</span><small>Um toque baixo junto do aviso</small></div><button class="tg" id="tg-snd" role="switch" type="button"></button></div>
+      </div>
+      <p class="small">Nesta versão de teste, os avisos aparecem com o app aberto. No app instalado, viram notificação no celular.</p>
+
+      <div class="sec">Árvore e semana</div>
+      <div class="card" style="margin-top:0">
+        <div class="switch"><div><span>Mensagens de fim de semana</span><small>Ideias para sair, ver gente e descansar a cabeça</small></div><button class="tg" id="tg-wk" role="switch" type="button"></button></div>
+        <div class="switch" style="display:block"><div><span>Estação da árvore</span><small>No automático, segue a estação do Brasil</small></div><div class="opt-sel" id="season-sel" style="margin-top:10px"></div></div>
+      </div>
+
+      <div class="sec">Conta</div>
+      <button class="link" id="redo-quiz" type="button">Refazer as perguntas iniciais</button>
+      <button class="link" id="seed" type="button">Simular três semanas de uso</button>
+      <button class="link" id="test-rem" type="button">Testar um aviso de hábito</button>
+      <button class="link" id="test-tree" type="button">Testar um aviso da árvore</button>
+      <button class="link" id="preview-tree" type="button">Ver a árvore crescer inteira</button>
+      <button class="link" id="sim-water" type="button">Simular um amigo regando</button>
+      <button class="link" id="sim-weekend" type="button">Ver como fica no fim de semana</button>
+      <button class="link" id="conf-letter" type="button">Ler a carta da semana</button>
+      <a class="link" href="../" style="text-decoration:none">Sobre o Getting Back</a>
+      <a class="link" href="../#/privacidade" style="text-decoration:none">Privacidade</a>
+      <button class="link danger" id="wipe" type="button">Apagar todos os dados</button>
+    </div>
+
+  </section>
+</div>
+
+<nav class="tabs" aria-label="Seções">
+  <div class="in">
+    <button class="tab" data-v="v-hoje" aria-current="page" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>Hoje</button>
+    <button class="tab" data-v="v-arvore" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-9"/><path d="M12 12c0-4 3-6.5 7.5-6.5 0 4.3-3 6.5-7.5 6.5z"/><path d="M12 14.5c0-3.2-2.5-5.5-6.5-5.5 0 3.3 2.6 5.5 6.5 5.5z"/></svg>Árvore</button>
+    <button class="tab" data-v="v-prog" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V11M12 19V5M19 19v-5"/></svg>Progresso</button>
+    <button class="tab" data-v="v-conf" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Ajustes</button>
+  </div>
+</nav>
+
+<div class="splash" id="splash"><div class="breath"></div><p id="sp-t"></p><small id="sp-s"></small></div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-label="Adicionar ao dia">
+  <div class="grab"></div>
+  <h3>Adicionar ao dia</h3>
+  <label class="field"><span>O que</span><input id="f-name" maxlength="48" placeholder="Ex.: alongar 5 minutos" autocomplete="off"></label>
+  <label class="field"><span>Horário (opcional)</span><input id="f-time" type="time"></label>
+  <div class="field"><span>Repetir</span>
+    <div class="seg wide" id="f-rep"><button type="button" data-v="hoje" aria-pressed="true">Só hoje</button><button type="button" data-v="todo">Todo dia</button></div>
+  </div>
+  <p class="small" id="f-msg" style="margin:0 0 12px"></p>
+  <button class="cta" id="f-add" type="button" disabled>Adicionar</button>
+</div>
+
+<div class="sheet" id="jsheet" role="dialog" aria-label="Anotação">
+  <div class="grab"></div>
+  <h3 id="j-q"></h3>
+  <p class="small" id="j-h" style="margin:-8px 0 14px"></p>
+  <div class="opt-sel" id="j-moods" style="margin-bottom:14px"></div>
+  <textarea id="j-text" rows="4" maxlength="1200" placeholder="Escreva do seu jeito"></textarea>
+  <div class="rec" id="j-rec"></div>
+  <p class="small" id="j-msg" style="margin:4px 0 12px"></p>
+  <button class="cta" id="j-save" type="button" disabled>Guardar na árvore</button>
+</div>
+
+<div class="sheet letter" id="lsheet" role="dialog" aria-label="Carta da semana"><div class="grab"></div><div id="letter-body"></div><button class="cta" id="l-close" type="button" style="margin-top:14px">Fechar</button></div>
+
+<div class="sheet" id="isheet" role="dialog" aria-label="Convidar">
+  <div class="grab"></div>
+  <h3>Convidar alguém para regar</h3>
+  <p class="small" style="margin:-8px 0 14px">Quem você convidar vê a sua árvore crescer e pode regar uma vez por dia. Nunca lê suas anotações.</p>
+  <div class="code" id="inv-code"></div>
+  <button class="cta" id="inv-copy" type="button">Copiar convite</button>
+  <button class="skip" id="inv-sim" type="button">Simular um amigo aceitando</button>
+  <p class="small" style="margin:0">Nesta prévia o convite não sai do aparelho. Na versão instalada ele vira um link.</p>
+</div>
+
+<div class="banner" id="banner" role="alert">
+  <div class="pulse"></div>
+  <div class="grow"><small id="bn-k"></small><b id="bn-t"></b></div>
+  <button class="later" id="bn-later" type="button">Depois</button>
+  <button id="bn-done" type="button">Feito</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const PALETTES = [
+  {id:"ciano", name:"Ciano", desc:"Preto de verdade com ciano", chips:["#000000","#0F181C","#22D3EE"]},
+  {id:"mare", name:"Maré", desc:"Escuro e calmo, para a noite", chips:["#0B2B33","#174651","#5FD3C4"]},
+  {id:"mata", name:"Mata", desc:"Verde fechado, dourado quente", chips:["#16241B","#263E2F","#D9B86A"]},
+  {id:"brasa", name:"Brasa", desc:"Escuro com laranja forte", chips:["#1B1417","#2F2429","#E2522F"]},
+  {id:"amanhecer", name:"Amanhecer", desc:"Claro, rosado, sem peso", chips:["#F5EDF2","#FFFFFF","#C2456B"]},
+  {id:"papel", name:"Papel", desc:"Claro e neutro, sem distração", chips:["#E8EBE9","#FFFFFF","#2E4BD6"]}
+];
+const HORAS = ["Cedo, entre 6h e 8h","No meio da manhã","No fim da tarde","À noite, antes de dormir"];
+const QUESTIONS = [
+  {id:"humor", t:"Como você tem se sentido nas últimas semanas?", h:"Não tem resposta certa. Responda como está hoje.",
+   o:["Bem, só quero me organizar melhor","Oscilando: tem dia bom e dia ruim","Cansado quase o tempo todo","Perdido, faz tempo que não me sinto eu"]},
+  {id:"tempo", t:"Há quanto tempo você está fora da rotina?", o:["Algumas semanas","Entre 1 e 3 meses","Mais de seis meses","Nunca cheguei a ter uma"]},
+  {id:"sono", t:"E o sono, como anda?", o:["Durmo e acordo em horários parecidos","Varia muito de um dia para o outro","Durmo tarde quase sempre","Durmo mal mesmo deitando cedo"]},
+  {id:"treino", t:"Quantas vezes você treinou na última semana?", h:"Última semana de verdade, não a semana boa de um mês atrás.", o:["Nenhuma","Uma ou duas","Três ou quatro","Cinco ou mais"]},
+  {id:"onde", t:"Onde faria mais sentido treinar agora?", o:["Em casa, sem equipamento","Academia","Ao ar livre","Ainda não sei"]},
+  {id:"comida", t:"Como está sua alimentação?", o:["Como bem na maioria dos dias","Acerto de dia e escorrego à noite","Como quando lembro","Está bagunçada"]},
+  {id:"tela", t:"Quanto do seu dia vai embora no celular?", o:["Pouco, uso bem","Uma ou duas horas","Mais de cinco horas","Prefiro não saber"]},
+  {id:"fe", t:"Você tem alguma prática de fé ou espiritualidade?", h:"Isso muda o que o app sugere. Pular não muda nada além disso.",
+   o:["Sim, e pratico com frequência","Acredito, mas me afastei","Estou buscando algo","Não faz parte da minha vida","Prefiro não responder"]},
+  {id:"fe_como", t:"Quer isso dentro da sua rotina?", only:["Sim, e pratico com frequência","Acredito, mas me afastei","Estou buscando algo"],
+   o:["Leitura ou oração diária","Ir ao culto ou à missa toda semana","Um momento de silêncio ou gratidão","Não, deixa fora do app"]},
+  {id:"trava", t:"O que mais te trava hoje?", h:"Pode marcar até duas.", multi:2, o:["Falta de energia","Falta de tempo","Ansiedade","Não vejo sentido no esforço","Estou sozinho nisso"]},
+  {id:"meta", t:"Nos próximos 30 dias, o que mais importa?", o:["Voltar a treinar","Dormir melhor","Comer melhor","Ter constância em qualquer coisa"]},
+  {id:"hora", t:"Que horas o app deve te lembrar?", o:HORAS}
+];
+const MAX_HABITS = 6, MAX_EXTRAS = 8;
+
+/* ---------- estado ---------- */
+let S = {palette:"ciano", A:{}, habits:[], extras:{}, log:{}, journal:{}, friends:[], waterIn:{}, onboarded:false, cfg:{rem:true, lead:15, snd:false, tree:true, wk:true, season:"auto"}};
+let idx = 0, sel = [], suggested = [], range = 14;
+const $ = s => document.querySelector(s);
+const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let saveWarned = false;
+function save(){ try{ localStorage.setItem("gb3", JSON.stringify(S)); }catch(e){ if(!saveWarned){ saveWarned = true; setTimeout(() => toast("Não deu para salvar neste aparelho. O que você fizer agora pode se perder ao fechar.", true), 100); } } }
+function load(){
+  try{
+    const r = localStorage.getItem("gb3");
+    if(r){ const o = JSON.parse(r); S = Object.assign(S, o); S.cfg = Object.assign({rem:true,lead:15,snd:false,tree:true,wk:true,season:"auto"}, o.cfg||{}); S.extras = S.extras || {}; S.journal = S.journal || {}; S.friends = S.friends || []; S.waterIn = S.waterIn || {}; }
+  }catch(e){}
+}
+const THEME = {ciano:"#000000", mare:"#0B2B33", mata:"#16241B", brasa:"#1B1417", amanhecer:"#F5EDF2", papel:"#E8EBE9"};
+function applyPalette(p){ document.documentElement.dataset.palette = p; const m = document.getElementById("theme-color"); if(m) m.setAttribute("content", THEME[p] || "#000000"); }
+function setPalette(p){ S.palette = p; applyPalette(p); save(); }
+const SCREEN_TITLE = {"s-cover":"Getting Back","s-palette":"Escolha sua paleta — Getting Back","s-quiz":"Perguntas iniciais — Getting Back","s-done":"Seu ponto de partida — Getting Back"};
+const VIEW_TITLE = {"v-hoje":"Hoje","v-arvore":"Sua árvore","v-prog":"Progresso","v-conf":"Ajustes"};
+const show = id => {
+  if(SCREEN_TITLE[id]) document.title = SCREEN_TITLE[id];
+  document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === id));
+  document.body.classList.toggle("in-app", id === "s-app");
+  $("#top").hidden = id !== "s-quiz";
+  window.scrollTo(0,0);
+};
+let tt; function toast(t, err){ const el=$("#toast"); el.textContent=t; el.classList.toggle("err", !!err); el.classList.add("on"); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove("on"), err ? 3600 : 2400); }
+
+/* ---------- datas ---------- */
+const key = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+const today = () => { const d = new Date(); d.setHours(12,0,0,0); return d; };
+const DOW = ["D","S","T","Q","Q","S","S"];
+const toMin = t => { if(!t) return null; const [h,m] = t.split(":").map(Number); return h*60+m; };
+const nowMin = () => { const d = new Date(); return d.getHours()*60 + d.getMinutes(); };
+
+function itemsFor(k){
+  const hs = S.habits.filter(h => !h.created || h.created <= k).map(h => ({...h, kind:"h"}));
+  const ex = (S.extras[k] || []).map(e => ({...e, kind:"e"}));
+  return hs.concat(ex);
+}
+const doneIds = k => S.log[k] || [];
+function pct(k){ const it = itemsFor(k); if(!it.length) return 0; const d = doneIds(k); return it.filter(i => d.includes(i.id)).length / it.length; }
+const active = k => itemsFor(k).some(i => doneIds(k).includes(i.id));
+function streakFrom(test){ let d = today(), n = 0; if(!test(key(d))) d = addDays(d,-1); while(test(key(d))){ n++; d = addDays(d,-1); } return n; }
+function bestStreak(){
+  const keys = Object.keys(S.log).filter(active).sort(); let best=0, cur=0, prev=null;
+  keys.forEach(k => { cur = (prev && key(addDays(new Date(prev+"T12:00:00"),1)) === k) ? cur+1 : 1; best = Math.max(best,cur); prev = k; });
+  return best;
+}
+
+/* ---------- onboarding ---------- */
+const box = $("#palettes");
+PALETTES.forEach(p => {
+  const b = document.createElement("button");
+  b.className = "pal"; b.type = "button"; b.dataset.id = p.id;
+  b.innerHTML = `<span class="chips">${p.chips.map(c=>`<i style="background:${c}"></i>`).join("")}</span><span><b>${p.name}</b><small>${p.desc}</small></span>`;
+  b.onclick = () => { setPalette(p.id); syncPals(); };
+  box.appendChild(b);
+});
+function syncPals(){ document.querySelectorAll("[data-id]").forEach(x => x.setAttribute("aria-pressed", x.dataset.id === S.palette)); }
+function visible(i){ const q = QUESTIONS[i]; if(!q) return false; return !q.only || q.only.includes(S.A[QUESTIONS[i-1].id]); }
+function step(dir){
+  do { idx += dir; } while(idx >= 0 && idx < QUESTIONS.length && !visible(idx));
+  if(idx >= QUESTIONS.length) return finish();
+  if(idx < 0){ idx = 0; return show("s-palette"); }
+  render();
+}
+function render(){
+  const q = QUESTIONS[idx];
+  const doneN = QUESTIONS.slice(0,idx).filter((_,i)=>visible(i)).length;
+  const total = QUESTIONS.filter((_,i)=>visible(i)).length;
+  $("#bar").style.width = (doneN/total*100)+"%";
+  $("#count").textContent = (doneN+1)+"/"+total;
+  $("#q-title").textContent = q.t;
+  $("#q-hint").textContent = q.h || ""; $("#q-hint").style.display = q.h ? "" : "none";
+  const cur = S.A[q.id];
+  sel = q.multi ? (Array.isArray(cur) ? cur.slice() : []) : (cur ? [cur] : []);
+  const list = $("#q-opts");
+  list.className = "opts" + (q.multi ? " multi" : ""); list.innerHTML = "";
+  q.o.forEach(text => {
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button"; b.setAttribute("aria-pressed", sel.includes(text));
+    b.innerHTML = `<span class="dot"></span><span>${text}</span>`;
+    b.onclick = () => {
+      if(q.multi){ const i = sel.indexOf(text); if(i>-1) sel.splice(i,1); else { sel.push(text); if(sel.length>q.multi) sel.shift(); } }
+      else sel = [text];
+      list.querySelectorAll(".opt").forEach(x => x.setAttribute("aria-pressed", sel.includes(x.textContent.trim())));
+      $("#q-next").disabled = !sel.length;
+    };
+    list.appendChild(b);
+  });
+  $("#q-next").disabled = !sel.length;
+  $("#q-next").textContent = idx === QUESTIONS.length-1 ? "Ver meu ponto de partida" : "Continuar";
+  show("s-quiz");
+}
+$("#start").onclick = () => { syncPals(); show("s-palette"); };
+$("#palette-next").onclick = () => { idx = -1; step(1); };
+$("#back").onclick = () => step(-1);
+$("#q-next").onclick = () => { const q = QUESTIONS[idx]; S.A[q.id] = q.multi ? sel.slice() : sel[0]; save(); step(1); };
+
+function finish(){
+  const A = S.A, trava = A.trava || [], pool = [];
+  const moveT = {"Cedo, entre 6h e 8h":"07:00","No meio da manhã":"10:00","No fim da tarde":"18:00","À noite, antes de dormir":"20:00"}[A.hora] || "18:00";
+  if(["Durmo tarde quase sempre","Varia muito de um dia para o outro","Durmo mal mesmo deitando cedo"].includes(A.sono))
+    pool.push({p:9, b:"Um horário fixo para deitar", s:"Repita o mesmo horário cinco noites.", t:"22:30"});
+  if(A.treino === "Nenhuma")
+    pool.push({p:9, b:"Dez minutos de movimento", s: A.onde === "Academia" ? "Ir até a academia já conta." : "Caminhada, alongamento, o que der.", t:moveT});
+  else if(A.treino === "Uma ou duas") pool.push({p:7, b:"Mais um treino na semana", s:"Adicione um dia e segure por um mês.", t:moveT});
+  else pool.push({p:4, b:"Registrar o treino", s:"Para não perder o fio nas semanas ruins.", t:moveT});
+  if(["Como quando lembro","Está bagunçada","Acerto de dia e escorrego à noite"].includes(A.comida))
+    pool.push({p:8, b:"Uma refeição no mesmo horário", s:"Uma fixa. As outras vêm depois.", t:"12:30"});
+  if(["Mais de cinco horas","Prefiro não saber"].includes(A.tela))
+    pool.push({p:7, b:"Celular fora do quarto", s:"Carregue fora do quarto à noite.", t:"22:00"});
+  if(A.fe_como && A.fe_como !== "Não, deixa fora do app")
+    pool.push({p:6, b:A.fe_como, s:"No mesmo lugar, todo dia.", t:"07:30"});
+  if(trava.includes("Estou sozinho nisso")) pool.push({p:6, b:"Contar para uma pessoa", s:"Diga a alguém o que vai fazer nesta semana.", t:"20:00"});
+  if(trava.includes("Falta de tempo")) pool.push({p:5, b:"Marcar o horário na agenda", s:"Hábito sem horário vira o que sobra do dia.", t:"08:00"});
+  if(trava.includes("Falta de energia")) pool.push({p:5, b:"Beber água ao acordar", s:"O menor hábito da lista.", t:"07:00"});
+  pool.push({p:1, b:"Arrumar a cama", s:"Dois minutos, e o dia já tem uma coisa feita.", t:"07:15"});
+  const meta = {"Voltar a treinar":"movimento","Dormir melhor":"deitar","Comer melhor":"refeição"}[A.meta] || "";
+  pool.forEach(h => { if(meta && h.b.toLowerCase().includes(meta)) h.p += 3; });
+  suggested = pool.sort((a,b)=>b.p-a.p).slice(0,3).sort((a,b)=>toMin(a.t)-toMin(b.t));
+  $("#habits").innerHTML = suggested.map((h,i)=>`<div class="habit"><span class="n">${i+1}</span><span><b>${esc(h.b)}</b><small>${h.t} — ${esc(h.s)}</small></span></div>`).join("");
+  const hora = {"Cedo, entre 6h e 8h":"de manhã cedo","No meio da manhã":"no meio da manhã","No fim da tarde":"no fim da tarde","À noite, antes de dormir":"à noite"}[A.hora] || "todo dia";
+  $("#done-lede").textContent = "Três hábitos, com horário, e o foco principal "+hora+". Nada além disso nas próximas duas semanas.";
+  const pesado = A.humor === "Perdido, faz tempo que não me sinto eu" || trava.includes("Ansiedade") || trava.includes("Não vejo sentido no esforço");
+  $("#done-note").textContent = pesado
+    ? "Pelo que você respondeu, o peso não é só de organização. Rotina ajuda, mas ajuda melhor com alguém junto: alguém de confiança ou um profissional."
+    : "Marcou o dia mesmo fazendo pela metade? Marque. A sequência vale mais que a execução perfeita.";
+  show("s-done");
+}
+$("#redo").onclick = () => { idx = -1; step(1); };
+$("#go-app").onclick = () => {
+  const k = key(today());
+  S.habits = suggested.map((h,i) => ({id:"h"+Date.now()+i, name:h.b, sub:h.s, time:h.t, created:k}));
+  S.onboarded = true; save();
+  splash("form", openApp);
+};
+
+/* ---------- respiro de abertura ---------- */
+function splash(kind, then){
+  const el = $("#splash"), h = new Date().getHours();
+  const n = streakFrom(active);
+  if(kind === "form"){ $("#sp-t").textContent = "Respira. Começa devagar."; $("#sp-s").textContent = "Seu dia está pronto."; }
+  else if(isWeekend() && S.cfg.wk){ $("#sp-t").textContent = (dow() === 6 ? "Sábado." : "Domingo.") + " Vai com calma hoje."; $("#sp-s").textContent = weekendMsg(); }
+  else {
+    $("#sp-t").textContent = n > 1 ? "Dia " + (active(key(today())) ? n : n+1) + ". No seu ritmo." : "Que bom que você voltou.";
+    $("#sp-s").textContent = (h < 12 ? "Bom dia." : h < 18 ? "Boa tarde." : "Boa noite.") + (jCount(key(today())) ? "" : " Sua árvore está esperando.");
+  }
+  el.classList.remove("out"); el.classList.add("on");
+  let gone = false;
+  const close = () => { if(gone) return; gone = true; el.classList.add("out"); then(); setTimeout(()=>{ el.classList.remove("on","out"); }, 900); };
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  setTimeout(close, reduced ? 700 : 3000);
+  el.onclick = close;
+}
+
+/* ---------- app ---------- */
+function openApp(){ show("s-app"); tab("v-hoje", true); }
+function tab(v, animate){
+  document.querySelectorAll(".view").forEach(x => x.classList.toggle("on", x.id === v));
+  document.title = VIEW_TITLE[v] + " — Getting Back";
+  document.querySelectorAll(".tab").forEach(t => t.dataset.v === v ? t.setAttribute("aria-current","page") : t.removeAttribute("aria-current"));
+  ({"v-hoje":()=>drawToday(animate !== false),"v-arvore":()=>drawTree(animate !== false),"v-prog":drawProg,"v-conf":drawConf})[v]();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => tab(t.dataset.v, true));
+
+function drawToday(animate){
+  const view = $("#v-hoje");
+  if(animate){ view.classList.remove("entering","entered"); void view.offsetWidth; view.classList.add("entering"); setTimeout(()=>{ view.classList.replace("entering","entered"); }, 1700); }
+  else view.classList.add("entered");
+  const d = today(), k = key(d), h = new Date().getHours();
+  $("#greet").textContent = (h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite") + ". " + d.toLocaleDateString("pt-BR",{weekday:"long", day:"numeric", month:"long"}) + ".";
+
+  const p = pct(k), C = 351.86;
+  const ring = $("#ring");
+  if(animate){ ring.style.transition = "none"; ring.style.strokeDashoffset = C; void ring.getBoundingClientRect(); ring.style.transition = ""; setTimeout(()=>{ ring.style.strokeDashoffset = C*(1-p); }, 450); }
+  else ring.style.strokeDashoffset = C*(1-p);
+  const it = itemsFor(k), dn = it.filter(i => doneIds(k).includes(i.id)).length;
+  $("#ring-n").textContent = Math.round(p*100) + "%";
+  $("#ring-l").textContent = dn + " de " + it.length + " hoje";
+
+  const n = streakFrom(active);
+  $("#streak-n").textContent = n;
+  $("#streak-l").textContent = n === 1 ? "dia seguido" : "dias seguidos";
+  $("#streak-s").textContent = n === 0 ? "Um item marcado e a sequência começa." : active(k) ? "Hoje já conta." : "Marque um item para manter.";
+
+  drawNext(); drawChart(animate); drawAgenda(); drawTreeHome(); drawWeekend(); drawLetterNudge();
+}
+
+function drawNext(){
+  const k = key(today()), nm = nowMin();
+  const pend = itemsFor(k).filter(i => i.time && !doneIds(k).includes(i.id) && toMin(i.time) >= nm - 30).sort((a,b)=>toMin(a.time)-toMin(b.time));
+  const el = $("#next");
+  if(!pend.length){
+    const all = itemsFor(k), left = all.filter(i => !doneIds(k).includes(i.id)).length;
+    el.innerHTML = `<div class="grow"><b>${left ? "Nada marcado para as próximas horas" : "Dia cumprido"}</b><small>${left ? left + " item" + (left>1?"s":"") + " sem horário ainda em aberto." : "Descansa. Amanhã, o mesmo."}</small></div>`;
+    return;
+  }
+  const nx = pend[0], diff = toMin(nx.time) - nm;
+  const when = diff <= 0 ? "Agora" : diff < 60 ? "em " + diff + " min" : "em " + Math.floor(diff/60) + "h" + (diff%60 ? String(diff%60).padStart(2,"0") : "");
+  el.innerHTML = `<div class="pulse"></div><div class="grow"><small>Próximo, às ${nx.time}</small><b>${esc(nx.name)}</b></div><span class="when">${when}</span>`;
+}
+
+function smooth(pts, lo, hi){
+  const C = v => lo === undefined ? v : Math.max(lo, Math.min(hi, v));
+  if(pts.length < 2) return "";
+  let d = `M${pts[0][0]},${pts[0][1]}`;
+  for(let i=0;i<pts.length-1;i++){
+    const p0 = pts[i-1]||pts[i], p1 = pts[i], p2 = pts[i+1], p3 = pts[i+2]||p2, t = .18;
+    const c1 = [p1[0]+(p2[0]-p0[0])*t, C(p1[1]+(p2[1]-p0[1])*t)], c2 = [p2[0]-(p3[0]-p1[0])*t, C(p2[1]-(p3[1]-p1[1])*t)];
+    d += ` C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+  }
+  return d;
+}
+function drawChart(animate){
+  const svg = $("#chart"), W = 320, H = 150, L = 26, R = 10, T = 12, B = 22, d = today();
+  const vals = []; for(let i=range-1;i>=0;i--) vals.push(pct(key(addDays(d,-i))));
+  const x = i => L + i*(W-L-R)/(range-1), y = v => T + (1-v)*(H-T-B);
+  const pts = vals.map((v,i)=>[x(i),y(v)]);
+  const line = smooth(pts, y(1), y(0)), area = line + ` L${x(range-1)},${H-B} L${x(0)},${H-B} Z`;
+  const lbl = dd => dd.toLocaleDateString("pt-BR",{day:"numeric",month:"short"}).replace(".","");
+  const last = pts[pts.length-1];
+  const dots = range <= 14 ? pts.slice(0,-1).map(p=>`<circle class="pt" cx="${p[0]}" cy="${p[1]}" r="2.6"/>`).join("") : "";
+  svg.innerHTML = `
+    <defs><linearGradient id="gfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".32"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+    <line class="grid" x1="${L}" x2="${W-R}" y1="${y(1)}" y2="${y(1)}"/><line class="grid" x1="${L}" x2="${W-R}" y1="${y(.5)}" y2="${y(.5)}" stroke-dasharray="3 4"/><line class="grid" x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}"/>
+    <text x="0" y="${y(1)+4}">100</text><text x="6" y="${y(.5)+4}">50</text><text x="12" y="${y(0)+4}">0</text>
+    <path class="area" d="${area}" fill="url(#gfill)"/>
+    <path class="line" id="cline" d="${line}"/>
+    ${dots}
+    <circle class="nowring" cx="${last[0]}" cy="${last[1]}" r="8"/>
+    <circle class="now" cx="${last[0]}" cy="${last[1]}" r="4"/>
+    <text x="${L}" y="${H-4}">${lbl(addDays(d,-(range-1)))}</text><text x="${W-R}" y="${H-4}" text-anchor="end">hoje</text>`;
+  const path = $("#cline"), len = path.getTotalLength();
+  svg.classList.remove("drawn");
+  if(animate){
+    path.style.strokeDasharray = len; path.style.strokeDashoffset = len; path.getBoundingClientRect();
+    path.style.transition = "stroke-dashoffset 1.9s cubic-bezier(.22,.61,.36,1) .5s";
+    requestAnimationFrame(()=>{ path.style.strokeDashoffset = 0; svg.classList.add("drawn"); });
+  } else svg.classList.add("drawn");
+  const avg = a => a.length ? a.reduce((s,v)=>s+v,0)/a.length : 0;
+  const w1 = [], w0 = []; for(let i=0;i<7;i++){ w1.push(pct(key(addDays(d,-i)))); w0.push(pct(key(addDays(d,-7-i)))); }
+  const a1 = Math.round(avg(w1)*100), a0 = Math.round(avg(w0)*100), dl = a1 - a0;
+  drawMoodStrip();
+  $("#delta").innerHTML = `<div><b>${a1}%</b>média desta semana</div><div><b>${dl>0?"+":""}${dl} pts</b>${dl>=0?"acima":"abaixo"} da semana passada</div>`;
+}
+$("#range").querySelectorAll("button").forEach(b => b.onclick = () => {
+  range = +b.dataset.r;
+  $("#range").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  drawChart(true);
+});
+
+const CHECK = `<svg viewBox="0 0 16 16" fill="none" stroke="var(--accent-ink)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg>`;
+function drawAgenda(){
+  const k = key(today()), nm = nowMin(), dn = doneIds(k);
+  const it = itemsFor(k);
+  const timed = it.filter(i => i.time).sort((a,b)=>toMin(a.time)-toMin(b.time));
+  const free = it.filter(i => !i.time);
+  const cur = timed.find(i => !dn.includes(i.id) && toMin(i.time) >= nm - 30);
+  const list = $("#agenda"); list.innerHTML = "";
+  timed.concat(free).forEach(i => {
+    const ok = dn.includes(i.id);
+    const row = document.createElement("div");
+    row.className = "item" + (ok ? " ok" : "") + (cur && cur.id === i.id ? " cur" : "");
+    row.innerHTML = `<div class="t">${i.time || "livre"}</div><div class="rail"><i></i></div>
+      <div class="cellx"><button class="check" type="button" aria-pressed="${ok}"><span class="box">${CHECK}</span>
+      <span style="min-width:0"><span class="hname">${esc(i.name)}${i.kind==="e"?'<span class="tag">só hoje</span>':""}</span>${i.sub?`<span class="hsub">${esc(i.sub)}</span>`:""}</span></button>
+      ${i.kind==="e"?`<button class="x" type="button" data-x="${i.id}" aria-label="Tirar do dia">Tirar</button>`:""}</div>`;
+    row.querySelector(".check").onclick = () => toggle(i.id);
+    const xb = row.querySelector("[data-x]"); if(xb) xb.onclick = () => removeExtra(i.id);
+    list.appendChild(row);
+  });
+  const c = it.filter(i => dn.includes(i.id)).length, t = it.length;
+  $("#today-msg").textContent = !t ? "Nada no dia ainda. Toque em Adicionar."
+    : c === 0 ? "Fazer um só já conta como dia ativo."
+    : c < t ? "Metade ainda é dia ativo. Sem pressa."
+    : "Tudo feito. Amanhã, o mesmo, nem mais, nem menos.";
+}
+function toggle(id){
+  const k = key(today()), arr = S.log[k] = S.log[k] || [];
+  const i = arr.indexOf(id), wasActive = active(k);
+  if(i>-1) arr.splice(i,1); else arr.push(id);
+  save();
+  const all = itemsFor(k).every(x => arr.includes(x.id));
+  drawToday(false);
+  if(i === -1 && !wasActive) toast(streakFrom(active) > 1 ? "Sequência mantida." : "Dia marcado.");
+  else if(i === -1 && all) toast("Tudo feito hoje.");
+}
+function removeExtra(id){
+  const k = key(today());
+  S.extras[k] = (S.extras[k]||[]).filter(e => e.id !== id);
+  S.log[k] = (S.log[k]||[]).filter(x => x !== id);
+  save(); drawToday(false); toast("Tirado do dia.");
+}
+
+/* ---------- folha de adicionar ---------- */
+let rep = "hoje";
+function openSheet(){
+  $("#f-name").value = ""; $("#f-time").value = ""; rep = "hoje"; syncRep(); checkForm();
+  $("#scrim").classList.add("on"); document.body.classList.add("lock"); $("#sheet").classList.add("on");
+  setTimeout(()=>$("#f-name").focus(), 350);
+}
+function closeSheet(){ document.body.classList.remove("lock"); $("#scrim").classList.remove("on"); document.querySelectorAll(".sheet").forEach(x => x.classList.remove("on")); stopRec(true); }
+function syncRep(){ $("#f-rep").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === rep)); checkForm(); }
+function checkForm(){
+  const k = key(today()), name = $("#f-name").value.trim();
+  const full = rep === "todo" ? S.habits.length >= MAX_HABITS : (S.extras[k]||[]).length >= MAX_EXTRAS;
+  $("#f-msg").textContent = full ? (rep === "todo" ? "Seis hábitos diários é o limite. Remova um em Ajustes." : "O dia já tem bastante coisa.") : rep === "todo" ? "Entra no seu dia todos os dias a partir de hoje." : "Some da lista amanhã.";
+  $("#f-add").disabled = !name || full;
+}
+$("#open-add").onclick = openSheet;
+$("#scrim").onclick = closeSheet;
+$("#f-name").oninput = checkForm;
+$("#f-name").onkeydown = e => { if(e.key === "Enter" && !$("#f-add").disabled) $("#f-add").click(); };
+$("#f-rep").querySelectorAll("button").forEach(b => b.onclick = () => { rep = b.dataset.v; syncRep(); });
+$("#f-add").onclick = () => {
+  const k = key(today()), name = $("#f-name").value.trim(), time = $("#f-time").value || "";
+  const id = (rep === "todo" ? "h" : "e") + Date.now();
+  if(rep === "todo") S.habits.push({id, name, sub:"", time, created:k});
+  else (S.extras[k] = S.extras[k] || []).push({id, name, time});
+  save(); closeSheet(); drawToday(false);
+  toast(time ? "Adicionado para as " + time + "." : "Adicionado ao dia.");
+};
+
+/* ---------- avisos ---------- */
+const fired = {};
+let audioCtx = null;
+document.addEventListener("pointerdown", () => { if(!audioCtx){ try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } }, {once:true});
+function chime(){
+  if(!S.cfg.snd || !audioCtx) return;
+  try{
+    const t0 = audioCtx.currentTime;
+    [523.25, 783.99].forEach((f,i) => {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0, t0 + i*.22); g.gain.linearRampToValueAtTime(.08, t0 + i*.22 + .06); g.gain.exponentialRampToValueAtTime(.0001, t0 + i*.22 + 1.6);
+      o.connect(g).connect(audioCtx.destination); o.start(t0 + i*.22); o.stop(t0 + i*.22 + 1.7);
+    });
+  }catch(e){}
+}
+let bnAction = null, bnTimer;
+function banner(kind, title, label, action){
+  $("#bn-k").textContent = kind; $("#bn-t").textContent = title;
+  $("#bn-done").textContent = label || "Feito"; $("#bn-done").hidden = !action;
+  bnAction = action || null;
+  $("#banner").classList.add("on"); chime();
+  clearTimeout(bnTimer); bnTimer = setTimeout(hideBanner, 9000);
+}
+function hideBanner(){ $("#banner").classList.remove("on"); }
+$("#bn-later").onclick = hideBanner;
+$("#bn-done").onclick = () => { hideBanner(); if(bnAction) bnAction(); };
+function habitDone(id){ return () => { const k = key(today()); if(!doneIds(k).includes(id) && itemsFor(k).some(i => i.id === id)) toggle(id); }; }
+const TREE_REM = [["plano","08:30","Bom dia. O que você planeja para hoje?"],["dia","21:00","Como foi o seu dia? Sua árvore cresce com isso."]];
+function checkReminders(){
+  if(!S.onboarded) return;
+  const k = key(today()), nm = nowMin();
+  if(S.cfg.rem) itemsFor(k).forEach(i => {
+    if(!i.time || doneIds(k).includes(i.id)) return;
+    const diff = toMin(i.time) - nm, fk = k + i.id;
+    if(diff > 0 && diff <= S.cfg.lead && !fired[fk+"s"]){ fired[fk+"s"] = 1; banner("Em " + diff + " min, às " + i.time, i.name, "Feito", habitDone(i.id)); }
+    else if(diff <= 0 && diff > -3 && !fired[fk+"n"]){ fired[fk+"n"] = 1; banner("Agora, " + i.time, i.name, "Feito", habitDone(i.id)); }
+  });
+  if(S.cfg.tree){
+    const d = jDay(k);
+    TREE_REM.forEach(([m,t,msg]) => {
+      const diff = toMin(t) - nm, fk = k + "j" + m;
+      if(!d[m] && diff <= 0 && diff > -3 && !fired[fk]){ fired[fk] = 1; banner("Sua árvore", msg, "Escrever", () => goWrite(m)); }
+    });
+  }
+  if(S.cfg.wk && isWeekend()){
+    const diff = toMin("10:30") - nm, fk = k + "wk";
+    if(diff <= 0 && diff > -3 && !fired[fk]){ fired[fk] = 1; banner(dow() === 6 ? "Sábado" : "Domingo", weekendMsg(), "Ver ideias", () => tab("v-hoje", false)); }
+  }
+  if(document.body.classList.contains("in-app") && $("#v-hoje").classList.contains("on")) drawNext();
+}
+setInterval(checkReminders, 20000);
+
+/* ---------- progresso ---------- */
+function drawProg(){
+  const d = today();
+  $("#st-days").textContent = Object.keys(S.log).filter(active).length;
+  $("#st-best").textContent = bestStreak();
+  const first = addDays(d,-27);
+  $("#heat-days").innerHTML = Array.from({length:7},(_,i)=>`<span>${DOW[addDays(first,i).getDay()]}</span>`).join("");
+  const heat = $("#heat"); heat.innerHTML = "";
+  for(let i=27;i>=0;i--){
+    const kk = key(addDays(d,-i)), f = pct(kk);
+    const el = document.createElement("i");
+    el.dataset.l = f === 0 ? 0 : f < .5 ? 1 : f < 1 ? 2 : 3; if(i===0) el.className = "today";
+    el.title = addDays(d,-i).toLocaleDateString("pt-BR") + ": " + Math.round(f*100) + "%";
+    heat.appendChild(el);
+  }
+  const ph = $("#per-habit");
+  if(!S.habits.length){ ph.innerHTML = `<p class="small" style="margin:0">Sem hábitos para mostrar.</p>`; return; }
+  ph.innerHTML = S.habits.map(hb => {
+    let cnt = 0, bars = "";
+    for(let i=13;i>=0;i--){ const on = doneIds(key(addDays(d,-i))).includes(hb.id); if(on) cnt++; bars += `<i class="${on?"on":""}"></i>`; }
+    const st = streakFrom(k => doneIds(k).includes(hb.id));
+    return `<div class="row"><div class="grow"><b>${esc(hb.name)}</b><small>${st ? st + (st===1?" dia seguido":" dias seguidos") : "Sem sequência agora"}</small><div class="bar14">${bars}</div></div><span class="num">${cnt}/14</span></div>`;
+  }).join("");
+}
+
+/* ---------- ajustes ---------- */
+function drawConf(){
+  $("#mini-pals").innerHTML = PALETTES.map(p => `<button class="mini" type="button" data-id="${p.id}" aria-label="${p.name}">${p.chips.map(c=>`<i style="background:${c}"></i>`).join("")}</button>`).join("");
+  $("#mini-pals").querySelectorAll(".mini").forEach(b => b.onclick = () => { setPalette(b.dataset.id); syncPals(); toast("Paleta " + PALETTES.find(p=>p.id===b.dataset.id).name + "."); });
+  syncPals();
+  const m = $("#manage");
+  m.innerHTML = S.habits.length ? S.habits.map(hb => `<div class="row"><div class="grow"><b>${esc(hb.name)}</b></div><input class="tin" type="time" value="${hb.time||""}" data-t="${hb.id}" aria-label="Horário"><button class="rm" type="button" data-rm="${hb.id}">Remover</button></div>`).join("")
+    : `<p class="small" style="margin:0 0 4px">Nenhum hábito. Adicione pela tela Hoje.</p>`;
+  m.querySelectorAll("[data-t]").forEach(inp => inp.onchange = () => { const hb = S.habits.find(h => h.id === inp.dataset.t); hb.time = inp.value; save(); toast(inp.value ? "Horário: " + inp.value + "." : "Sem horário."); });
+  m.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => {
+    const hb = S.habits.find(h => h.id === b.dataset.rm);
+    if(!confirm('Remover "' + hb.name + '"? O histórico dele some junto.')) return;
+    S.habits = S.habits.filter(h => h.id !== hb.id);
+    for(const k in S.log) S.log[k] = S.log[k].filter(id => id !== hb.id);
+    save(); drawConf(); toast("Hábito removido.");
+  });
+  $("#limit-msg").textContent = S.habits.length >= 3 ? "Adicione novos só quando os atuais estiverem saindo sem esforço." : "";
+  const tg = (el, on) => el.setAttribute("aria-checked", on);
+  tg($("#tg-rem"), S.cfg.rem); tg($("#tg-snd"), S.cfg.snd); tg($("#tg-tree"), S.cfg.tree); tg($("#tg-wk"), S.cfg.wk);
+  const SO = [["auto","Automático"],["primavera","Primavera"],["verao","Verão"],["outono","Outono"],["inverno","Inverno"],["off","Desligado"]];
+  $("#season-sel").innerHTML = SO.map(([v,l]) => `<button class="pill" type="button" data-s="${v}" aria-pressed="${S.cfg.season===v}">${l}</button>`).join("");
+  $("#season-sel").querySelectorAll(".pill").forEach(b => b.onclick = () => { S.cfg.season = b.dataset.s; save(); drawConf(); toast(b.dataset.s === "auto" ? "Estação: " + SEASON_NAME[seasonOf(new Date())] + ", no automático." : b.dataset.s === "off" ? "Estações desligadas." : "Estação: " + b.textContent + "."); });
+  $("#lead-row").style.display = S.cfg.rem ? "" : "none";
+  $("#lead-sel").innerHTML = [5,15,30].map(n => `<button class="pill" type="button" data-l="${n}" aria-pressed="${S.cfg.lead===n}">${n} min</button>`).join("");
+  $("#lead-sel").querySelectorAll(".pill").forEach(b => b.onclick = () => { S.cfg.lead = +b.dataset.l; save(); drawConf(); });
+}
+$("#tg-rem").onclick = () => { S.cfg.rem = !S.cfg.rem; save(); drawConf(); toast(S.cfg.rem ? "Avisos ligados." : "Avisos desligados."); };
+$("#tg-snd").onclick = () => { S.cfg.snd = !S.cfg.snd; save(); drawConf(); if(S.cfg.snd) chime(); };
+$("#test-rem").onclick = () => {
+  const k = key(today()), pend = itemsFor(k).find(i => !doneIds(k).includes(i.id));
+  banner("Exemplo de aviso", pend ? pend.name : "Beber água", "Feito", pend ? habitDone(pend.id) : null);
+};
+$("#test-tree").onclick = () => banner("Sua árvore", "Como foi o seu dia? Sua árvore cresce com isso.", "Escrever", () => goWrite(suggestMoment()));
+$("#preview-tree").onclick = () => {
+  tab("v-arvore", false);
+  const real = treeG(treeD());
+  animateTree(0, .95, 5200, 90);
+  toast("Prévia: a árvore depois de uns meses escrevendo.");
+  setTimeout(() => { if($("#v-arvore").classList.contains("on")) animateTree(.95, real, 2200, treeD()); }, 7600);
+};
+$("#tg-tree").onclick = () => { S.cfg.tree = !S.cfg.tree; save(); drawConf(); toast(S.cfg.tree ? "Lembretes da árvore ligados." : "Lembretes da árvore desligados."); };
+$("#redo-quiz").onclick = () => { idx = -1; step(1); };
+$("#seed").onclick = () => {
+  const d = today(), start = key(addDays(d,-22));
+  S.habits.forEach(h => { if(!h.created || h.created > start) h.created = start; });
+  for(let i=21;i>=1;i--){
+    const k = key(addDays(d,-i));
+    const base = i > 14 ? .35 : i > 7 ? .6 : .82;
+    S.log[k] = Math.random() < .1 ? [] : S.habits.filter(() => Math.random() < base).map(h => h.id);
+  }
+  const PL = ["Treinar cedo e dormir antes da meia-noite.","Terminar o trabalho da faculdade.","Caminhar depois do almoço.","Organizar a semana.","Ligar para minha mãe.","Fazer só o básico hoje."];
+  const DI = ["Foi mais leve do que eu esperava.","Cansativo, mas fiz o principal.","Não treinei, mas comi melhor.","Dia bom. Consegui focar.","Pesado. Amanhã tento de novo.","Dormi melhor e senti diferença."];
+  const pick = a => a[Math.floor(Math.random()*a.length)];
+  for(let i=21;i>=1;i--){
+    const k = key(addDays(d,-i)), at = addDays(d,-i).getTime(), day = {};
+    const p = i > 14 ? .45 : i > 7 ? .7 : .9;
+    if(Math.random() < p) day.plano = {text:pick(PL), at};
+    if(Math.random() < p*.8) day.sinto = {mood:pick(MOODS), text:"", at};
+    if(Math.random() < p*.85) day.dia = {text:pick(DI), at};
+    if(Object.keys(day).length) S.journal[k] = day; else delete S.journal[k];
+  }
+  save(); toast("Três semanas simuladas."); tab("v-hoje", true);
+};
+$("#wipe").onclick = () => {
+  if(!confirm("Apagar hábitos, histórico e respostas? Não tem como desfazer.")) return;
+  S = {palette:S.palette, A:{}, habits:[], extras:{}, log:{}, journal:{}, friends:[], waterIn:{}, onboarded:false, cfg:S.cfg}; save(); idb.clear(); show("s-cover");
+};
+
+/* ================= ÁRVORE ================= */
+const SPROUT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-9"/><path d="M12 12c0-4 3-6.5 7.5-6.5 0 4.3-3 6.5-7.5 6.5z"/><path d="M12 14.5c0-3.2-2.5-5.5-6.5-5.5 0 3.3 2.6 5.5 6.5 5.5z"/></svg>`;
+const MOMENTS = [
+  {id:"plano", t:"Plano do dia", q:"O que você planeja para hoje?", h:"Uma ou duas coisas já bastam."},
+  {id:"sinto", t:"Como estou", q:"Como você está agora?", h:"Escolha uma palavra, escreva ou grave. Qualquer um vale.", mood:true},
+  {id:"dia", t:"Como foi o dia", q:"Como foi o seu dia?", h:"O que deu certo, o que pesou, o que fica para amanhã."}
+];
+const MOODS = ["Leve","Bem","Neutro","Cansado","Pesado"];
+const STAGES = [[0,"Raminho"],[3,"Broto"],[7,"Muda"],[15,"Arbusto"],[30,"Árvore jovem"],[50,"Árvore"],[80,"Árvore em flor"]];
+const jDay = k => S.journal[k] || {};
+const jCount = k => MOMENTS.filter(m => jDay(k)[m.id]).length;
+function treeD(){ let D = 0; for(const k in S.journal){ const n = jCount(k); if(n) D += .6 + .2*(n-1); } for(const k in (S.waterIn||{})){ if((S.waterIn[k]||[]).length) D += .1; } return D; }
+const treeG = D => .04 + .96*(1 - Math.exp(-D/30));
+const jStreak = () => streakFrom(k => jCount(k) > 0);
+function stageOf(D){ let i = 0; STAGES.forEach((s,j) => { if(D >= s[0]) i = j; }); return i; }
+function suggestMoment(){
+  const k = key(today()), d = jDay(k), h = new Date().getHours();
+  const order = h < 12 ? ["plano","sinto","dia"] : h < 18 ? ["sinto","plano","dia"] : ["dia","sinto","plano"];
+  return order.find(m => !d[m]) || order[0];
+}
+
+/* geração determinística dos galhos */
+function rng(a){ return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const TREE = (function build(seed){
+  const r = rng(seed), B = [];
+  (function add(angle, len, depth){
+    const b = {angle, len, depth, birth: depth === 0 ? 0 : .1 + (depth-1)*.135 + r()*.05, kids:[], id:B.length, ls:r()};
+    B.push(b);
+    if(depth < 6){
+      const n = depth === 0 ? 2 : (r() < .35 ? 3 : 2);
+      for(let i=0;i<n;i++){
+        const spread = n === 2 ? (i ? 1 : -1)*(14 + r()*16) : (i-1)*(22 + r()*10);
+        const a = Math.max(-158, Math.min(-22, angle + spread + (r()-.5)*10));
+        b.kids.push(add(a, len*(.72 + r()*.1), depth+1));
+      }
+    }
+    return b;
+  })(-90 + (r()-.5)*4, 1, 0);
+  return B;
+})(11);
+
+function treeSVG(g, D){
+  const SE = SEASON;
+  const out = [], leaves = [], flowers = [], L0 = 62;
+  const ease = t => 1 - Math.pow(1-t, 3), cl = t => Math.max(0, Math.min(1, t));
+  const bw = 2 + 9*Math.sqrt(g), F = n => n.toFixed(1);
+  (function walk(b, x, y){
+    const f = ease(cl((g - b.birth)/.16));
+    if(f <= 0) return;
+    const a = b.angle*Math.PI/180, len = b.len*L0*f;
+    const x2 = x + Math.cos(a)*len, y2 = y + Math.sin(a)*len;
+    const w = Math.max(.8, bw*Math.pow(.64, b.depth)*(.45 + .55*f));
+    out.push(`<line x1="${F(x)}" y1="${F(y)}" x2="${F(x2)}" y2="${F(y2)}" stroke-width="${w.toFixed(2)}"/>`);
+    let kg = 0;
+    b.kids.forEach(k => { kg = Math.max(kg, ease(cl((g - k.birth)/.16))); walk(k, x2, y2); });
+    if(b.depth >= 1){
+      let lf = ease(cl((g - b.birth - .06)/.14));
+      if(b.depth < 4) lf *= (1 - .6*kg);
+      if(lf > .02){
+        const n = b.depth >= 5 ? 3 : 2;
+        for(let i=0;i<n;i++){
+          if(SE === "inverno" && b.depth >= 4 && (b.id + i) % 2 === 0) continue;
+          const ang = b.angle + (i - (n-1)/2)*55 + (b.ls - .5)*40, ar = ang*Math.PI/180, off = 3 + i*1.2;
+          const lx = x2 + Math.cos(ar)*off, ly = y2 + Math.sin(ar)*off, sz = lf*(.85 + b.ls*.4)*(1 + Math.max(0, 5 - b.depth)*.14);
+          leaves.push(`<ellipse cx="${F(lx)}" cy="${F(ly)}" rx="${(5.2*sz).toFixed(2)}" ry="${(2.8*sz).toFixed(2)}" transform="rotate(${ang.toFixed(0)} ${F(lx)} ${F(ly)})" opacity="${(.5 + ((b.id*7 + i)%5)*.11).toFixed(2)}"/>`);
+        }
+        if(((D >= 80 && b.ls > .7) || (SE === "primavera" && g > .42 && b.ls > .74)) && b.depth >= 4) flowers.push(`<circle cx="${F(x2)}" cy="${F(y2)}" r="${(2.6*lf).toFixed(2)}"/>`);
+      }
+    }
+    if(b.depth === 0 && g < .32){
+      const sz = (1 - cl((g - .2)/.12)) * Math.min(1, g/.05);
+      [-1,1].forEach(side => {
+        const ang = -90 + side*58, ar = ang*Math.PI/180, lx = x2 + Math.cos(ar)*6*sz, ly = y2 + Math.sin(ar)*6*sz;
+        leaves.push(`<ellipse cx="${F(lx)}" cy="${F(ly)}" rx="${(7.5*sz).toFixed(2)}" ry="${(3.8*sz).toFixed(2)}" transform="rotate(${ang} ${F(lx)} ${F(ly)})" opacity=".92"/>`);
+      });
+    }
+  })(TREE[0], 150, 290);
+  return `<g class="trunk">${out.join("")}</g><g class="leaves">${leaves.join("")}</g><g class="flowers">${flowers.join("")}</g>`;
+}
+
+let treeRAF = 0;
+function animateTree(from, to, dur, D){
+  cancelAnimationFrame(treeRAF);
+  const el = $("#tree-g"), glow = $("#tglow");
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches || dur <= 0){ el.innerHTML = treeSVG(to, D); glow.style.opacity = .15 + to*.7; return; }
+  const t0 = performance.now(); let last = 0;
+  const frame = now => {
+    const t = Math.min(1, (now - t0)/dur), e = 1 - Math.pow(1 - t, 3), g = from + (to - from)*e;
+    if(t < 1 && now - last < 33){ treeRAF = requestAnimationFrame(frame); return; }
+    last = now;
+    el.innerHTML = treeSVG(g, D); glow.style.opacity = .15 + g*.7;
+    if(t < 1) treeRAF = requestAnimationFrame(frame);
+  };
+  treeRAF = requestAnimationFrame(frame);
+}
+function leafBurst(){
+  const box = $("#treebox"), r = box.getBoundingClientRect();
+  for(let i=0;i<12;i++){
+    const p = document.createElement("i");
+    p.className = "leafp";
+    p.style.left = (r.width*(.3 + Math.random()*.4)) + "px";
+    p.style.top = (r.height*(.3 + Math.random()*.35)) + "px";
+    p.style.setProperty("--dx", ((Math.random() - .5)*90) + "px");
+    p.style.setProperty("--r", ((Math.random() - .5)*260) + "deg");
+    p.style.animationDelay = (Math.random()*.9) + "s";
+    box.appendChild(p); setTimeout(() => p.remove(), 4200);
+  }
+}
+
+function drawTreeHome(){
+  const k = key(today()), js = jStreak(), wrote = jCount(k) > 0, h = new Date().getHours();
+  const chip = $("#treechip");
+  chip.innerHTML = SPROUT + `<b>${js}</b>`;
+  chip.setAttribute("aria-label", "Árvore: " + js + " dias seguidos escrevendo");
+  chip.classList.toggle("wait", !wrote);
+  chip.onclick = () => tab("v-arvore", true);
+  const nd = $("#nudge"), d = jDay(k);
+  let t = "", sub = "";
+  if(!wrote){ t = h < 12 ? "O que você planeja para hoje?" : h < 18 ? "Como você está agora?" : "Como foi o seu dia?"; sub = js ? "Escreva algo e a sequência da árvore chega a " + (js + 1) + "." : "Uma frase já faz sua árvore crescer."; }
+  else if(h >= 19 && !d.dia){ t = "Falta contar como foi o dia"; sub = "Fecha o dia e sua árvore cresce mais um pouco."; }
+  nd.hidden = !t;
+  if(t){ nd.innerHTML = SPROUT + `<div><b>${t}</b><small>${sub}</small></div>`; nd.onclick = () => goWrite(suggestMoment()); }
+}
+
+function drawTree(grow){
+  const k = key(today()), D = treeD(), g = treeG(D), si = stageOf(D), js = jStreak();
+  $("#stage-name").textContent = STAGES[si][1];
+  const days = Object.keys(S.journal).filter(x => jCount(x)).length;
+  $("#stage-sub").textContent = days ? "Você escreveu em " + days + (days === 1 ? " dia." : " dias.") : "Escreva algo hoje e ela começa a crescer.";
+  $("#t-streak").textContent = js;
+  $("#t-streak-l").textContent = js === 1 ? "dia seguido" : "dias seguidos";
+  const nx = STAGES[si+1];
+  if(nx){
+    const cur = STAGES[si][0], f = (D - cur)/(nx[0] - cur);
+    $("#stage-bar").style.width = Math.round(f*100) + "%";
+    const left = Math.max(1, Math.ceil((nx[0] - D)/.8));
+    $("#stage-next").textContent = "Cerca de " + left + (left === 1 ? " dia" : " dias") + " escrevendo até virar " + nx[1] + ".";
+  } else { $("#stage-bar").style.width = "100%"; $("#stage-next").textContent = "Sua árvore floresceu. Agora é só cuidar."; }
+  SEASON = activeSeason();
+  $("#tree").setAttribute("class", SEASON ? "s-" + SEASON : "");
+  $("#season-tag").hidden = !SEASON;
+  $("#season-tag").textContent = SEASON ? SEASON_NAME[SEASON] : "";
+  const sun = dow() === 0;
+  $("#lt-title").textContent = sun ? "Sua carta da semana chegou" : "Carta da semana";
+  $("#lt-sub").textContent = sun ? "Um resumo do que você escreveu nos últimos sete dias" : "Chega aos domingos. Toque para ler a semana até agora.";
+  if(grow) animateTree(0, g, 2800, D); else animateTree(g, g, 0, D);
+  drawMoments(); drawHist(); drawFriends(); ambient();
+}
+
+const ICON_OK = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.5 3 3 6-7"/></svg>`;
+const ICON_PEN = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h3l7-7-3-3-7 7z"/></svg>`;
+const ICON_MIC = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5.5" y="1.5" width="5" height="8" rx="2.5"/><path d="M3 7.5a5 5 0 0 0 10 0M8 12.5v2"/></svg>`;
+function snippet(e){
+  const parts = [];
+  if(e.mood) parts.push(e.mood);
+  if(e.text) parts.push(e.text);
+  if(e.audio) parts.push("Áudio de " + fmtDur(e.dur||0));
+  return parts.join(". ");
+}
+const fmtDur = s => Math.floor(s/60) + ":" + String(Math.round(s%60)).padStart(2,"0");
+function drawMoments(){
+  const k = key(today()), d = jDay(k), sug = suggestMoment();
+  $("#moments").innerHTML = MOMENTS.map(m => {
+    const e = d[m.id];
+    return `<button class="moment ${e ? "done" : m.id === sug ? "suggest" : ""}" type="button" data-m="${m.id}"><span class="mi">${e ? ICON_OK : ICON_PEN}</span><span class="grow"><b>${m.t}</b><small>${e ? esc(snippet(e)) : "Toque para escrever ou gravar"}</small></span></button>`;
+  }).join("");
+  $("#moments").querySelectorAll("[data-m]").forEach(b => b.onclick = () => openJournal(b.dataset.m));
+}
+function drawHist(){
+  const tk = key(today());
+  const keys = Object.keys(S.journal).filter(k => k < tk && jCount(k)).sort().reverse().slice(0,7);
+  $("#hist-title").hidden = $("#hist").hidden = !keys.length;
+  $("#hist").innerHTML = keys.map(k => {
+    const d = jDay(k), dt = new Date(k + "T12:00:00").toLocaleDateString("pt-BR",{weekday:"long", day:"numeric", month:"short"}).replace(".","");
+    return `<div class="hday"><div class="hdate">${dt}</div>${MOMENTS.filter(m => d[m.id]).map(m => {
+      const e = d[m.id];
+      return `<div class="hm"><small>${m.t}</small>${(e.mood || e.text) ? `<p>${esc([e.mood, e.text].filter(Boolean).join(". "))}</p>` : ""}${e.audio ? `<button class="play" type="button" data-a="${k}:${m.id}">Ouvir áudio, ${fmtDur(e.dur||0)}</button>` : ""}</div>`;
+    }).join("")}</div>`;
+  }).join("");
+  $("#hist").querySelectorAll("[data-a]").forEach(b => b.onclick = () => playAudio(b.dataset.a, b));
+}
+let playing = null;
+async function playAudio(id, btn){
+  if(playing){ playing.a.pause(); const same = playing.id === id; playing.b.textContent = playing.label; playing = null; if(same) return; }
+  const blob = await idb.get(id);
+  if(!blob){ toast("Áudio não encontrado neste aparelho.", true); return; }
+  const a = new Audio(URL.createObjectURL(blob));
+  playing = {a, id, b:btn, label:btn.textContent}; btn.textContent = "Parar";
+  a.onended = () => { btn.textContent = playing ? playing.label : btn.textContent; playing = null; };
+  a.play().catch(() => toast("Não deu para tocar o áudio.", true));
+}
+
+/* ---------- armazenamento de áudio (IndexedDB, local) ---------- */
+const idb = {
+  db:null,
+  open(){ if(this.db) return Promise.resolve(this.db); return new Promise((res, rej) => { try{ const r = indexedDB.open("gb-audio", 1); r.onupgradeneeded = () => r.result.createObjectStore("a"); r.onsuccess = () => { this.db = r.result; res(this.db); }; r.onerror = () => rej(r.error); }catch(e){ rej(e); } }); },
+  async tx(mode, fn){ const db = await this.open(); return new Promise((res, rej) => { const t = db.transaction("a", mode), st = t.objectStore("a"), q = fn(st); t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error); }); },
+  async put(k, v){ return this.tx("readwrite", st => st.put(v, k)); },
+  async get(k){ try{ return await this.tx("readonly", st => st.get(k)); }catch(e){ return null; } },
+  async del(k){ try{ return await this.tx("readwrite", st => st.delete(k)); }catch(e){} },
+  async clear(){ try{ return await this.tx("readwrite", st => st.clear()); }catch(e){} }
+};
+
+/* ---------- folha do diário ---------- */
+let jm = "plano", jMood = "", recState = "idle", mediaRec = null, recStream = null, recChunks = [], recBlob = null, recUrl = "", recStart = 0, recTick = 0, recDur = 0, audioRemoved = false, hadAudio = false;
+function goWrite(m){ if(!$("#v-arvore").classList.contains("on")) tab("v-arvore", false); setTimeout(() => openJournal(m), 250); }
+function openJournal(m){
+  jm = m; const M = MOMENTS.find(x => x.id === m), e = jDay(key(today()))[m] || {};
+  $("#j-q").textContent = M.q; $("#j-h").textContent = M.h;
+  jMood = e.mood || "";
+  $("#j-moods").hidden = !M.mood;
+  $("#j-moods").innerHTML = MOODS.map(x => `<button class="pill" type="button" aria-pressed="${x === jMood}">${x}</button>`).join("");
+  $("#j-moods").querySelectorAll(".pill").forEach(b => b.onclick = () => { jMood = jMood === b.textContent ? "" : b.textContent; $("#j-moods").querySelectorAll(".pill").forEach(x => x.setAttribute("aria-pressed", x.textContent === jMood)); checkJ(); });
+  $("#j-text").value = e.text || "";
+  recBlob = null; audioRemoved = false; hadAudio = !!e.audio; recDur = e.dur || 0;
+  $("#j-msg").textContent = "";
+  recState = hadAudio ? "saved" : "idle"; renderRec();
+  $("#j-save").textContent = e.at ? "Atualizar" : "Guardar na árvore";
+  checkJ();
+  $("#scrim").classList.add("on"); document.body.classList.add("lock"); $("#jsheet").classList.add("on");
+}
+function checkJ(){ $("#j-save").disabled = recState === "rec" || !($("#j-text").value.trim() || jMood || recBlob || (hadAudio && !audioRemoved)); }
+$("#j-text").oninput = checkJ;
+function renderRec(){
+  const el = $("#j-rec");
+  if(recState === "idle") el.innerHTML = `<button class="recbtn" type="button" id="rec-go">${ICON_MIC}Gravar áudio</button>`;
+  else if(recState === "rec") el.innerHTML = `<div class="pulse"></div><span class="rectime" id="rec-t">0:00</span><button class="recbtn" type="button" id="rec-stop">Parar</button>`;
+  else if(recState === "preview") el.innerHTML = `<audio controls src="${recUrl}"></audio><button class="recbtn" type="button" id="rec-del">Apagar</button>`;
+  else if(recState === "saved") el.innerHTML = `<button class="recbtn" type="button" id="rec-play">${ICON_MIC}Ouvir áudio, ${fmtDur(recDur)}</button><button class="recbtn" type="button" id="rec-del">Apagar</button>`;
+  const go = $("#rec-go"), st = $("#rec-stop"), del = $("#rec-del"), pl = $("#rec-play");
+  if(go) go.onclick = startRec;
+  if(st) st.onclick = () => stopRec(false);
+  if(del) del.onclick = () => { if(recState === "saved") audioRemoved = true; recBlob = null; recState = "idle"; renderRec(); checkJ(); };
+  if(pl) pl.onclick = () => playAudio(key(today()) + ":" + jm, pl);
+  checkJ();
+}
+async function startRec(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder){ $("#j-msg").textContent = "Gravação de áudio não está disponível aqui. Escreva por enquanto; no app instalado o áudio funciona direto."; return; }
+  try{ recStream = await navigator.mediaDevices.getUserMedia({audio:true}); }
+  catch(e){ $("#j-msg").textContent = "Não deu para acessar o microfone aqui. Escreva por enquanto; no app instalado o áudio funciona direto."; return; }
+  recChunks = [];
+  try{ mediaRec = new MediaRecorder(recStream); }catch(e){ recStream.getTracks().forEach(t => t.stop()); $("#j-msg").textContent = "Este navegador não grava áudio."; return; }
+  mediaRec.ondataavailable = ev => { if(ev.data.size) recChunks.push(ev.data); };
+  mediaRec.onstop = () => {
+    recStream && recStream.getTracks().forEach(t => t.stop());
+    if(mediaRec._discard){ mediaRec = null; return; }
+    recBlob = new Blob(recChunks, {type: mediaRec.mimeType || "audio/webm"});
+    if(recUrl) URL.revokeObjectURL(recUrl);
+    recUrl = URL.createObjectURL(recBlob);
+    recState = "preview"; mediaRec = null; renderRec();
+  };
+  mediaRec.start(); recStart = Date.now(); recState = "rec"; renderRec(); $("#j-msg").textContent = "Até 90 segundos.";
+  recTick = setInterval(() => {
+    recDur = (Date.now() - recStart)/1000;
+    const t = $("#rec-t"); if(t) t.textContent = fmtDur(recDur);
+    if(recDur >= 90) stopRec(false);
+  }, 250);
+}
+function stopRec(discard){
+  clearInterval(recTick);
+  if(mediaRec && mediaRec.state !== "inactive"){ mediaRec._discard = discard; mediaRec.stop(); }
+  if(!discard) $("#j-msg").textContent = "";
+}
+$("#j-save").onclick = async () => {
+  const k = key(today()), day = S.journal[k] = S.journal[k] || {}, aid = k + ":" + jm;
+  const D0 = treeD(), g0 = treeG(D0), s0 = stageOf(D0), isNew = !day[jm];
+  const e = {text: $("#j-text").value.trim(), mood: jMood, at: Date.now(), audio: false, dur: 0};
+  if(recBlob){
+    try{ await idb.put(aid, recBlob); e.audio = true; e.dur = Math.round(recDur); }
+    catch(err){ toast("Não deu para guardar o áudio neste aparelho. O texto foi salvo.", true); }
+  } else if(hadAudio && !audioRemoved){ e.audio = true; e.dur = day[jm].dur || 0; }
+  else if(hadAudio && audioRemoved){ idb.del(aid); }
+  if(!e.text && !e.mood && !e.audio){ return; }
+  day[jm] = e; save();
+  closeSheet();
+  const D1 = treeD(), g1 = treeG(D1), s1 = stageOf(D1);
+  drawTree(false);
+  if(isNew){
+    animateTree(g0, g1, 3200, D1); setTimeout(leafBurst, 500);
+    setTimeout(() => toast(s1 > s0 ? "Sua árvore virou " + STAGES[s1][1] + "." : jStreak() > 1 ? "Mais um dia. A árvore cresceu." : "Guardado. A árvore cresceu."), 900);
+  } else toast("Anotação atualizada.");
+};
+
+/* ================= ESTAÇÕES ================= */
+let SEASON = "";
+const SEASON_NAME = {primavera:"Primavera", verao:"Verão", outono:"Outono", inverno:"Inverno"};
+function seasonOf(d){           // hemisfério sul
+  const m = d.getMonth() + 1, day = d.getDate(), v = m*100 + day;
+  if(v >= 1221 || v < 320) return "verao";
+  if(v < 621) return "outono";
+  if(v < 922) return "inverno";
+  return "primavera";
+}
+function activeSeason(){ const c = S.cfg.season; return c === "off" ? "" : c === "auto" ? seasonOf(new Date()) : c; }
+let ambientT = 0;
+function ambient(){
+  clearInterval(ambientT);
+  if(SEASON !== "outono" || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const drop = () => {
+    if(!$("#v-arvore").classList.contains("on") || document.hidden) return;
+    const box = $("#treebox"), r = box.getBoundingClientRect(), p = document.createElement("i");
+    p.className = "fallleaf";
+    p.style.background = ["#E39B3F","#D8663A","#EFC15A"][Math.floor(Math.random()*3)];
+    p.style.left = (r.width*(.25 + Math.random()*.5)) + "px"; p.style.top = (r.height*(.18 + Math.random()*.2)) + "px";
+    p.style.setProperty("--dx", ((Math.random() - .3)*80) + "px"); p.style.setProperty("--r", (Math.random()*400 - 200) + "deg");
+    box.appendChild(p); setTimeout(() => p.remove(), 7200);
+  };
+  ambientT = setInterval(drop, 3800); setTimeout(drop, 1600);
+}
+
+/* ================= HUMOR NO GRÁFICO ================= */
+const MOOD_SCORE = {"Leve":5,"Bem":4,"Neutro":3,"Cansado":2,"Pesado":1};
+function moodOf(k){ const e = jDay(k).sinto; return e && e.mood ? e.mood : ""; }
+function drawMoodStrip(){
+  const d = today(), cells = [];
+  for(let i=range-1;i>=0;i--){ const m = moodOf(key(addDays(d,-i))); cells.push(`<i class="${m ? "m" + MOOD_SCORE[m] : ""}" title="${m || "sem humor"}"></i>`); }
+  const st = $("#moodstrip");
+  st.style.gridTemplateColumns = `repeat(${range},1fr)`; st.innerHTML = cells.join("");
+  const any = cells.some(c => c.includes('class="m'));
+  $("#moodleg").hidden = !any;
+  $("#moodleg").innerHTML = any ? Object.entries(MOOD_SCORE).map(([m,v]) => `<span><i class="m${v}"></i>${m}</span>`).join("") : "";
+  // relação entre cumprir o dia e o humor
+  const hi = [], lo = [];
+  for(let i=0;i<30;i++){ const k = key(addDays(d,-i)), m = moodOf(k); if(!m) continue; (pct(k) >= .5 ? hi : lo).push(MOOD_SCORE[m]); }
+  const ins = $("#mood-insight");
+  if(hi.length >= 3 && lo.length >= 2){
+    const avg = a => a.reduce((s,v)=>s+v,0)/a.length, dh = avg(hi), dl = avg(lo);
+    ins.hidden = false;
+    ins.textContent = dh - dl >= .5 ? "Nos dias em que você cumpriu mais da metade do dia, seu humor costuma estar melhor."
+      : dl - dh >= .5 ? "Seu humor não depende de cumprir tudo. Dia leve também conta."
+      : "Seu humor tem ficado parecido, cumprindo muito ou pouco. Tudo bem assim.";
+  } else ins.hidden = true;
+}
+
+/* ================= FIM DE SEMANA ================= */
+let forceDow = null;
+const dow = () => forceDow !== null ? forceDow : new Date().getDay();
+const isWeekend = () => dow() === 0 || dow() === 6;
+const WK = {
+  6: ["Sábado. O melhor treino de hoje pode ser rir com alguém.","Chama alguém que você não vê faz tempo. Um café já vale.","Sai um pouco de casa. Sol, rua, qualquer lugar que não seja a tela.","Hoje não precisa render. Precisa descansar a cabeça."],
+  0: ["Domingo é para recarregar. Faça algo só porque é bom.","Um almoço com a família ou com os amigos também é cuidado.","Caminhe sem destino por meia hora e veja como você volta.","Descansa hoje. Amanhã a rotina continua do mesmo lugar."],
+  5: ["Sexta. Planeja uma coisa boa para o fim de semana.","Sexta à noite: combina algo com alguém para amanhã."]
+};
+const WK_IDEAS = ["Chamar alguém para sair","Caminhar ao ar livre","Uma tarde sem tela","Visitar a família","Fazer algo novo"];
+function weekendMsg(){ const pool = WK[dow()] || WK[6], n = new Date().getDate(); return pool[n % pool.length]; }
+function drawWeekend(){
+  const el = $("#weekend"), dw = dow(), h = new Date().getHours();
+  const on = S.cfg.wk && (dw === 0 || dw === 6 || (dw === 5 && (h >= 17 || forceDow === 5)));
+  el.hidden = !on; if(!on) return;
+  const k = key(today()), have = (S.extras[k] || []).map(e => e.name);
+  const label = dw === 6 ? "Fim de semana, sábado" : dw === 0 ? "Fim de semana, domingo" : "Sexta-feira";
+  el.innerHTML = `<div class="wk-day">${label}</div><p>${weekendMsg()}</p><div class="opt-sel">${WK_IDEAS.slice(0,4).map(x => `<button class="pill" type="button" ${have.includes(x) ? "disabled" : ""}>${have.includes(x) ? "No seu dia: " : ""}${x}</button>`).join("")}</div>`;
+  el.querySelectorAll(".pill:not([disabled])").forEach(b => b.onclick = () => {
+    const kk = key(today()); (S.extras[kk] = S.extras[kk] || []).push({id:"e" + Date.now(), name:b.textContent, time:""});
+    save(); drawToday(false); toast("Adicionado ao seu dia, sem horário.");
+  });
+}
+$("#sim-weekend").onclick = () => {
+  forceDow = forceDow === 6 ? 0 : 6;
+  tab("v-hoje", true);
+  toast("Prévia de " + (forceDow === 6 ? "sábado" : "domingo") + ". Toque de novo para alternar.");
+};
+
+/* ================= CARTA DA SEMANA ================= */
+function drawLetterNudge(){
+  const el = $("#letter-nudge"), k = key(today());
+  const show = dow() === 0 && S.letterSeen !== k && Object.keys(S.journal).length > 0;
+  el.hidden = !show;
+  if(show){ el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m4.5 7 7.5 6 7.5-6"/></svg><div><b>Sua carta da semana chegou</b><small>O que as suas anotações dizem sobre esses sete dias.</small></div>`; el.onclick = openLetter; }
+}
+function buildLetter(){
+  const d = today(), days = [];
+  for(let i=6;i>=0;i--){ const dd = addDays(d,-i); days.push({k:key(dd), d:dd}); }
+  const wd = x => x.d.toLocaleDateString("pt-BR",{weekday:"long"});
+  const written = days.filter(x => jCount(x.k) > 0);
+  const moods = days.map(x => moodOf(x.k)).filter(Boolean);
+  const cnt = {}; moods.forEach(m => cnt[m] = (cnt[m]||0) + 1);
+  const top = Object.entries(cnt).sort((a,b) => b[1]-a[1])[0];
+  const light = days.filter(x => ["Leve","Bem"].includes(moodOf(x.k))).map(wd);
+  const heavy = days.filter(x => ["Cansado","Pesado"].includes(moodOf(x.k))).length;
+  const avg = a => a.reduce((s,v)=>s+v,0)/(a.length||1);
+  const a1 = Math.round(avg(days.map(x => pct(x.k)))*100);
+  const a0 = Math.round(avg(Array.from({length:7},(_,i) => pct(key(addDays(d,-7-i)))))*100);
+  const plans = [...new Set(days.map(x => (jDay(x.k).plano||{}).text).filter(Boolean))].slice(-3);
+  const best = days.filter(x => (jDay(x.k).dia||{}).text).sort((a,b) => (MOOD_SCORE[moodOf(b.k)]||3) - (MOOD_SCORE[moodOf(a.k)]||3) || pct(b.k) - pct(a.k))[0];
+  const range = days[0].d.toLocaleDateString("pt-BR",{day:"numeric",month:"long"}) + " a " + d.toLocaleDateString("pt-BR",{day:"numeric",month:"long"});
+  const P = [];
+  if(!written.length){
+    P.push(`<p>Essa semana ficou sem anotações, e tudo bem. A árvore continua do mesmo tamanho, esperando.</p><p>Se quiser recomeçar, uma frase hoje à noite já basta.</p>`);
+  } else {
+    P.push(`<p>Você escreveu em ${written.length} de 7 dias${written.length >= 5 ? ". Isso é constância de verdade." : written.length >= 3 ? ". Mais da metade do caminho." : ". Pouco, mas não zero."}</p>`);
+    if(top) P.push(`<p>O humor que mais apareceu foi <b>${top[0].toLowerCase()}</b>${light.length ? ", e os dias mais leves foram " + listPt(light) : ""}.</p>`);
+    P.push(`<p>Você cumpriu em média ${a1}% do seu dia${a0 || a1 ? (a1 > a0 ? ", " + (a1 - a0) + " pontos a mais que na semana anterior." : a1 < a0 ? ", um pouco menos que na semana anterior. Semana de ajuste também faz parte." : ", igual à semana anterior.") : "."}</p>`);
+    if(plans.length) P.push(`<p>Coisas que você disse que queria fazer:</p>${plans.map(t => `<blockquote>${esc(t)}</blockquote>`).join("")}`);
+    if(best) P.push(`<p>${/^(sábado|domingo)/.test(wd(best)) ? "No" : "Na"} ${wd(best)}, você escreveu:</p><blockquote>${esc(jDay(best.k).dia.text)}</blockquote>`);
+    P.push(`<p>${heavy >= 3 ? "Foi uma semana pesada. Voltar devagar também é voltar, e se o peso continuar, vale conversar com alguém." : "Semana que vem, o mesmo tamanho. Nem mais, nem menos."}</p>`);
+  }
+  return `<h3>${dow() === 0 ? "Sua carta da semana" : "Sua semana até agora"}</h3><p class="ldate">${range}</p>${P.join("")}<p class="sign">Com calma, Getting Back.</p>`;
+}
+function listPt(a){ return a.length === 1 ? a[0] : a.slice(0,-1).join(", ") + " e " + a[a.length-1]; }
+function openLetter(){
+  $("#letter-body").innerHTML = buildLetter();
+  $("#scrim").classList.add("on"); document.body.classList.add("lock"); $("#lsheet").classList.add("on");
+  if(dow() === 0){ S.letterSeen = key(today()); save(); drawLetterNudge(); }
+}
+$("#open-letter").onclick = openLetter;
+$("#conf-letter").onclick = openLetter;
+$("#l-close").onclick = closeSheet;
+
+/* ================= QUEM REGA COM VOCÊ ================= */
+const FRIEND_POOL = ["Ana","Rafa","Bia","João","Duda","Léo","Mari"];
+function drawFriends(){
+  const k = key(today()), el = $("#friends"), inc = S.waterIn[k] || [];
+  if(!S.friends.length){ el.innerHTML = `<p class="small" style="margin:0">Convide alguém de confiança. A pessoa vê a sua árvore crescer e pode regar uma vez por dia. Suas anotações continuam só suas.</p>`; return; }
+  el.innerHTML = (inc.length ? `<p class="small" style="margin:0 0 12px;color:var(--ink)">${listPt(inc)} ${inc.length > 1 ? "regaram" : "regou"} sua árvore hoje.</p>` : "") +
+    S.friends.map(f => {
+      const done = (f.iw || []).includes(k);
+      return `<div class="friend"><div class="av">${esc(f.name[0])}</div><div class="grow"><b>${esc(f.name)}</b><small>Árvore: ${STAGES[Math.min(STAGES.length-1, f.stage||1)][1]}</small></div><button class="water" type="button" data-f="${f.id}" ${done ? "disabled" : ""}>${done ? "Regada hoje" : "Regar"}</button></div>`;
+    }).join("");
+  el.querySelectorAll("[data-f]").forEach(b => b.onclick = () => {
+    const f = S.friends.find(x => x.id === b.dataset.f); (f.iw = f.iw || []).push(k); save();
+    rain(b.closest(".friend"), 6); setTimeout(drawFriends, 700); toast("Você regou a árvore de " + f.name + ".");
+  });
+}
+function addFriend(){
+  const used = S.friends.map(f => f.name), name = FRIEND_POOL.find(n => !used.includes(n)) || "Amigo " + (S.friends.length + 1);
+  const f = {id:"f" + Date.now(), name, stage: 1 + Math.floor(Math.random()*4), iw:[]};
+  S.friends.push(f); save(); return f;
+}
+function rain(host, n){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const r = host.getBoundingClientRect(); const pos = getComputedStyle(host).position;
+  if(pos === "static") host.style.position = "relative";
+  for(let i=0;i<n;i++){
+    const p = document.createElement("i"); p.className = "dropp";
+    p.style.left = (r.width*(.3 + Math.random()*.4)) + "px"; p.style.top = (r.height*.12) + "px";
+    p.style.animationDelay = (i*.12 + Math.random()*.2) + "s";
+    host.appendChild(p); setTimeout(() => p.remove(), 2600);
+  }
+}
+let invCode = "";
+$("#open-invite").onclick = () => {
+  invCode = "GB-" + Math.random().toString(36).slice(2,6).toUpperCase();
+  $("#inv-code").textContent = invCode;
+  $("#scrim").classList.add("on"); document.body.classList.add("lock"); $("#isheet").classList.add("on");
+};
+$("#inv-copy").onclick = async () => {
+  const txt = "Rega a minha árvore no Getting Back? Meu código: " + invCode;
+  try{ await navigator.clipboard.writeText(txt); toast("Convite copiado."); }
+  catch(e){ toast("Seu código: " + invCode); }
+};
+$("#inv-sim").onclick = () => { const f = addFriend(); closeSheet(); drawFriends(); toast(f.name + " aceitou o convite."); };
+$("#sim-water").onclick = () => {
+  const f = S.friends[0] || addFriend(), k = key(today());
+  const list = S.waterIn[k] = S.waterIn[k] || [];
+  const g0 = treeG(treeD()), first = !list.length;
+  if(!list.includes(f.name)) list.push(f.name);
+  save();
+  tab("v-arvore", false);
+  setTimeout(() => {
+    rain($("#treebox"), 14);
+    if(first) setTimeout(() => animateTree(g0, treeG(treeD()), 2200, treeD()), 900);
+    banner("Sua árvore", f.name + " regou sua árvore.", null, null);
+  }, 300);
+};
+$("#tg-wk").onclick = () => { S.cfg.wk = !S.cfg.wk; save(); drawConf(); toast(S.cfg.wk ? "Mensagens de fim de semana ligadas." : "Mensagens de fim de semana desligadas."); };
+
+/* ---------- início ---------- */
+load();
+applyPalette(S.palette);
+if(S.onboarded){ splash("return", openApp); setTimeout(checkReminders, 3500); }
+</script>
+</body>
+</html>

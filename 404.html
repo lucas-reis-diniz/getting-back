@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<base href="/getting-back/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Página não encontrada — Getting Back</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Getting Back é um app gratuito para quem saiu da rotina e quer voltar no próprio ritmo: três hábitos por vez, avisos calmos e uma árvore que cresce com o seu diário.">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Getting Back — voltar leva tempo">
+<meta property="og:description" content="Um app gratuito para retomar a rotina devagar, com uma árvore que cresce a cada anotação.">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://lucas-reis-diniz.github.io/getting-back/">
+<meta property="og:image" content="https://lucas-reis-diniz.github.io/getting-back/og-getting-back.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Getting Back: voltar leva tempo, com uma árvore florida em ciano sobre fundo preto">
+<link rel="canonical" href="https://lucas-reis-diniz.github.io/getting-back/">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Cpath d='M32 52V30' stroke='%2322D3EE' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M32 30c0-9 6-14 15-14 0 9-6 14-15 14z' fill='%2322D3EE'/%3E%3Cpath d='M32 35c0-7-5-11-12-11 0 7 5 11 12 11z' fill='%2322D3EE' opacity='.7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000; --surf:#0A1013; --surf-2:#0F181C; --ink:#E6F7F9; --muted:#7C959B;
+    --accent:#22D3EE; --accent-ink:#00161A; --line:rgba(230,247,249,.11); --err:#FF7A8A;
+    --display:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+    --body:"Inter","Helvetica Neue",Arial,sans-serif;
+    --calm:cubic-bezier(.22,.61,.36,1);
+    --nav:64px;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *,*::before,*::after{box-sizing:inherit}
+  [hidden]{display:none!important}
+  html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav) + env(safe-area-inset-top,0px) + 12px);-webkit-text-size-adjust:100%}
+  body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body.lock{overflow:hidden}
+  a{color:inherit}
+  button{font:inherit;color:inherit}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+  h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.02em}
+  h1{font-size:clamp(44px,10vw,88px);line-height:.92;font-weight:800}
+  h2{font-size:clamp(30px,5.6vw,50px);line-height:1;font-weight:800}
+  h3{font-size:20px;font-weight:600;line-height:1.2}
+  p{margin:.7em 0}
+  .in{max-width:1080px;margin:0 auto;padding:0 22px}
+  .lede{color:var(--muted);font-size:clamp(17px,2.2vw,19px);max-width:42ch}
+  .eyebrow{font-family:var(--display);font-size:13px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;font-weight:600}
+
+  /* botões */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:15px 22px;font-family:var(--display);font-weight:600;font-size:16.5px;text-decoration:none;cursor:pointer;border:1.5px solid transparent;transition:transform .4s var(--calm),background .3s ease,border-color .3s ease}
+  .btn.primary{background:var(--accent);color:var(--accent-ink)}
+  .btn.primary:hover{transform:translateY(-2px)}
+  .btn.ghost{border-color:var(--line);background:transparent}
+  .btn.ghost:hover{border-color:var(--muted)}
+  .btn svg{width:18px;height:18px}
+
+  /* navegação */
+  header{position:fixed;top:0;left:0;right:0;z-index:40;padding-top:env(safe-area-inset-top,0px);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .4s ease}
+  header.scrolled{border-bottom-color:var(--line)}
+  .navin{height:var(--nav);display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .logo{display:flex;align-items:center;gap:9px;text-decoration:none;font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.01em}
+  .logo svg{width:26px;height:26px}
+  .links{display:flex;align-items:center;gap:6px}
+  .links a{text-decoration:none;color:var(--muted);font-size:15px;padding:8px 12px;border-radius:10px;transition:color .3s ease}
+  .links a:hover,.links a[aria-current="page"]{color:var(--ink)}
+  .links .btn{padding:10px 16px;font-size:15px;margin-left:8px;color:var(--accent-ink)}
+  .burger{display:none;width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:none;cursor:pointer;position:relative}
+  .burger span{position:absolute;left:12px;right:12px;height:1.8px;background:var(--ink);border-radius:2px;transition:transform .45s var(--calm),opacity .3s ease}
+  .burger span:nth-child(1){top:15px}.burger span:nth-child(2){top:21px}.burger span:nth-child(3){top:27px}
+  .burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+  .burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+  .burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+  .mnav{position:fixed;inset:0;z-index:39;background:var(--bg);padding:calc(var(--nav) + env(safe-area-inset-top,0px) + 24px) 22px calc(28px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:4px;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s .45s}
+  .mnav.on{opacity:1;visibility:visible;transition:opacity .45s ease}
+  .mnav a{font-family:var(--display);font-size:32px;font-weight:600;text-decoration:none;padding:10px 0;border-bottom:1px solid var(--line);opacity:0;transform:translateY(8px);transition:opacity .5s var(--calm),transform .5s var(--calm)}
+  .mnav.on a{opacity:1;transform:none}
+  .mnav.on a:nth-child(2){transition-delay:.05s}.mnav.on a:nth-child(3){transition-delay:.1s}.mnav.on a:nth-child(4){transition-delay:.15s}
+  .mnav .btn{margin-top:auto;font-size:18px;padding:17px}
+  @media (max-width:820px){ .links{display:none} .burger{display:block} }
+
+  main{padding-top:calc(var(--nav) + env(safe-area-inset-top,0px))}
+  .page{display:none}
+  .page.on{display:block;animation:pagein .7s var(--calm) both}
+  @keyframes pagein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* hero */
+  .hero{position:relative;padding:64px 0 40px;overflow:hidden}
+  .hero .in{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center}
+  .hero h1 .two{color:var(--accent);display:block}
+  .hero .lede{margin-top:22px}
+  .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+  .hero-note{color:var(--muted);font-size:14px;margin-top:16px}
+  .herotree{position:relative;aspect-ratio:1/1;max-width:520px;width:100%;justify-self:center}
+  .herotree .glow{position:absolute;left:50%;top:44%;width:86%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 22%,transparent),transparent 65%);transform:translate(-50%,-50%);animation:breathe 7s ease-in-out infinite;pointer-events:none}
+  @keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(.92);opacity:.55}50%{transform:translate(-50%,-50%) scale(1.05);opacity:1}}
+  .tree{position:relative;width:100%;height:100%;overflow:visible}
+  .tree .ground{fill:var(--line)}
+  .tree .trunk line{stroke:color-mix(in srgb,var(--muted) 72%,var(--ink));stroke-linecap:round}
+  .tree .leaves ellipse{fill:var(--accent)}
+  .tree .flowers circle{fill:#FFB3C7}
+  .tree .sway{transform-box:view-box;transform-origin:150px 289px;animation:sway 9s ease-in-out infinite}
+  @keyframes sway{0%,100%{transform:rotate(-.9deg)}50%{transform:rotate(.9deg)}}
+  .stagechip{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--bg);white-space:nowrap}
+  .stagechip b{color:var(--ink);font-weight:600}
+  @media (max-width:820px){
+    .hero{padding:34px 0 20px}
+    .hero .in{grid-template-columns:1fr}
+    .herotree{max-width:380px;order:-1;margin-bottom:-10px}
+  }
+
+  section{padding:88px 0}
+  .sec-head{max-width:640px;margin-bottom:40px}
+  .sec-head h2{margin-top:12px}
+  .rule{border-top:1px solid var(--line)}
+
+  /* como funciona */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .step{background:var(--surf);border:1.5px solid var(--line);border-radius:20px;padding:26px 24px}
+  .step .n{font-family:var(--display);font-weight:800;font-size:44px;color:var(--accent);line-height:1}
+  .step h3{margin:18px 0 6px}
+  .step p{color:var(--muted);margin:0}
+  @media (max-width:820px){ .steps{grid-template-columns:1fr} }
+
+  /* app mockup */
+  .appsec .in{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center}
+  .phone{justify-self:center;width:min(300px,82vw);aspect-ratio:9/19;border-radius:44px;border:1.5px solid var(--line);background:var(--bg);padding:18px 16px;position:relative;box-shadow:0 30px 80px -20px color-mix(in srgb,var(--accent) 25%,transparent);overflow:hidden}
+  .phone::before{content:"";position:absolute;top:10px;left:50%;transform:translateX(-50%);width:84px;height:22px;border-radius:12px;background:#0d1417}
+  .ph-top{display:flex;justify-content:space-between;align-items:center;margin-top:26px;font-size:11px;color:var(--muted)}
+  .ph-chip{display:flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:999px;padding:3px 8px;color:var(--ink);font-weight:600}
+  .ph-chip svg{width:12px;height:12px;color:var(--accent)}
+  .ph-hero{display:flex;align-items:center;gap:14px;margin:16px 0}
+  .ph-ring{width:84px;height:84px;flex-shrink:0;position:relative}
+  .ph-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ph-ring .fg{stroke:var(--accent);stroke-dasharray:226;stroke-dashoffset:226;transition:stroke-dashoffset 2s var(--calm) .3s}
+  .phone.seen .ph-ring .fg{stroke-dashoffset:75}
+  .ph-ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-size:19px}
+  .ph-streak b{display:block;font-family:var(--display);font-size:40px;font-weight:800;color:var(--accent);line-height:.9}
+  .ph-streak span{font-size:12px;color:var(--muted)}
+  .ph-card{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;font-size:12.5px}
+  .ph-card i{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--muted);flex-shrink:0}
+  .ph-card.ok i{background:var(--accent);border-color:var(--accent)}
+  .ph-card.ok span{color:var(--muted)}
+  .ph-card em{font-style:normal;color:var(--muted);font-size:11px;margin-left:auto;font-variant-numeric:tabular-nums}
+  .ph-chart{height:70px;margin:6px 0 12px}
+  .ph-chart path{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-dasharray:400;stroke-dashoffset:400;transition:stroke-dashoffset 2.4s var(--calm) .6s}
+  .phone.seen .ph-chart path{stroke-dashoffset:0}
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .feat div{padding:18px 0;border-top:1px solid var(--line)}
+  .feat h3{font-size:17px}
+  .feat p{color:var(--muted);font-size:15px;margin:6px 0 0}
+  @media (max-width:820px){ .appsec .in{grid-template-columns:1fr;gap:40px} .feat{grid-template-columns:1fr} }
+
+  /* árvore */
+  .treesec .in{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+  .treestage{position:relative;aspect-ratio:1/1;width:100%;max-width:480px;justify-self:center}
+  .stages{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .stages button{border:1.5px solid var(--line);background:var(--surf);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer;transition:all .3s ease}
+  .stages button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+  .tree-points{margin-top:24px}
+  .tree-points p{padding-left:14px;border-left:2px solid var(--line);color:var(--muted);margin:0 0 12px}
+  .tree-points b{color:var(--ink);font-weight:600}
+  @media (max-width:820px){ .treesec .in{grid-template-columns:1fr} .treestage{max-width:360px;order:-1} }
+
+  /* faq */
+  .faq{max-width:760px}
+  details{border-top:1px solid var(--line)}
+  details:last-child{border-bottom:1px solid var(--line)}
+  summary{list-style:none;cursor:pointer;padding:20px 40px 20px 0;font-family:var(--display);font-size:19px;font-weight:600;position:relative}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"";position:absolute;right:6px;top:50%;width:12px;height:12px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);transition:transform .45s var(--calm)}
+  details[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
+  details .ans{color:var(--muted);padding:0 0 20px;max-width:62ch}
+
+  /* cta final */
+  .final{text-align:center;padding:110px 0}
+  .final h2{max-width:14ch;margin:0 auto}
+  .final .lede{margin:18px auto 30px}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:48px 0 calc(34px + env(safe-area-inset-bottom,0px))}
+  .fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:28px}
+  .fgrid p{color:var(--muted);font-size:14.5px;max-width:34ch}
+  .fcol h4{font-family:var(--display);font-size:14px;font-weight:600;margin:0 0 12px;color:var(--muted)}
+  .fcol a{display:block;text-decoration:none;font-size:15px;padding:6px 0;color:var(--ink);opacity:.85}
+  .fcol a:hover{opacity:1;color:var(--accent)}
+  .fbot{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+  @media (max-width:820px){ .fgrid{grid-template-columns:1fr 1fr} .fgrid > div:first-child{grid-column:1/-1} }
+
+  /* páginas de texto */
+  .doc{max-width:720px;padding:60px 22px 90px;margin:0 auto}
+  .doc h1{font-size:clamp(38px,7vw,60px)}
+  .doc .upd{color:var(--muted);font-size:14px;margin:14px 0 34px}
+  .doc h2{font-size:22px;margin:34px 0 8px}
+  .doc p,.doc li{color:color-mix(in srgb,var(--ink) 82%,var(--muted))}
+  .doc .draft{border:1.5px dashed var(--line);border-radius:14px;padding:14px 16px;color:var(--muted);font-size:14.5px}
+
+  /* formulário */
+  .form{display:grid;gap:16px;margin-top:26px}
+  .field label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+  .field input,.field textarea,.field select{width:100%;background:var(--surf);border:1.5px solid var(--line);border-radius:12px;padding:14px;color:var(--ink);font:inherit;font-size:16px;transition:border-color .3s ease}
+  .field textarea{resize:vertical;min-height:130px}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);outline:none}
+  .field.bad input,.field.bad textarea,.field.bad select{border-color:var(--err)}
+  .consent{display:flex!important;gap:10px;align-items:flex-start;color:var(--ink)!important;font-size:14.5px!important;line-height:1.45;cursor:pointer}
+  .consent input{width:20px!important;height:20px;flex-shrink:0;margin:1px 0 0;accent-color:var(--accent);padding:0!important}
+  .ferr{display:block;color:var(--err);font-size:13.5px;margin-top:6px;min-height:0}
+  .alert{display:flex;gap:12px;align-items:flex-start;border-radius:14px;padding:14px 16px;font-size:15px;animation:pagein .6s var(--calm) both}
+  .alert svg{width:20px;height:20px;flex-shrink:0;margin-top:1px}
+  .alert.ok{background:color-mix(in srgb,var(--accent) 12%,var(--surf));border:1.5px solid color-mix(in srgb,var(--accent) 45%,transparent)}
+  .alert.ok svg{color:var(--accent)}
+  .alert.err{background:color-mix(in srgb,var(--err) 10%,var(--surf));border:1.5px solid color-mix(in srgb,var(--err) 45%,transparent)}
+  .alert.err svg{color:var(--err)}
+  .btn[disabled]{opacity:.5;cursor:progress}
+
+  /* 404 */
+  .nf{min-height:calc(100vh - var(--nav) - 220px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 22px}
+  .nf .tree{width:180px;height:180px}
+  .nf .code404{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.2em;color:var(--accent);margin-top:6px}
+  .nf h1{font-size:clamp(34px,7vw,56px);margin-top:14px;max-width:14ch}
+  .nf .lede{margin:14px auto 28px}
+
+  /* revelar ao rolar */
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity 1s var(--calm),transform 1s var(--calm)}
+  .reveal.seen{opacity:1;transform:none}
+  .reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}.reveal.d3{transition-delay:.3s}
+
+  .toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:12px;font-size:14.5px;font-weight:500;pointer-events:none;transition:all .5s var(--calm);z-index:60;max-width:calc(100% - 40px);text-align:center}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+  .toast.err{background:var(--err);color:#1a0508}
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+<a href="#conteudo" class="btn primary" style="position:absolute;left:-9999px;top:8px;z-index:99" onfocus="this.style.left='12px'" onblur="this.style.left='-9999px'">Pular para o conteúdo</a>
+
+<header id="hdr">
+  <div class="in navin">
+    <a class="logo" href="#/" aria-label="Getting Back, início">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 54V30" stroke="#22D3EE" stroke-width="4.5" stroke-linecap="round"/><path d="M32 30c0-9 6-14 15-14 0 9-6 14-15 14z" fill="#22D3EE"/><path d="M32 36c0-7-5-11-12-11 0 7 5 11 12 11z" fill="#22D3EE" opacity=".7"/></svg>
+      Getting Back
+    </a>
+    <nav class="links" aria-label="Principal">
+      <a href="#/como-funciona">Como funciona</a>
+      <a href="#/arvore">A árvore</a>
+      <a href="#/perguntas">Perguntas</a>
+      <a href="#/contato">Contato</a>
+      <a class="btn primary" data-app>Abrir o app</a>
+    </nav>
+    <button class="burger" id="burger" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mnav"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<nav class="mnav" id="mnav" aria-label="Menu">
+  <a href="#/como-funciona">Como funciona</a>
+  <a href="#/arvore">A árvore</a>
+  <a href="#/perguntas">Perguntas</a>
+  <a href="#/contato">Contato</a>
+  <a class="btn primary" data-app>Abrir o app, é grátis</a>
+</nav>
+
+<main id="conteudo">
+
+<!-- ================= HOME ================= -->
+<div class="page" id="p-home">
+  <div class="hero">
+    <div class="in">
+      <div>
+        <div class="eyebrow reveal">Gratuito, no seu ritmo</div>
+        <h1 class="reveal d1" style="margin-top:16px">Voltar<span class="two">leva tempo.</span></h1>
+        <p class="lede reveal d2">Um app para quem saiu da rotina e quer entrar de novo sem cobrança: três hábitos por vez, avisos calmos e uma árvore que cresce toda vez que você escreve sobre o seu dia.</p>
+        <div class="cta-row reveal d3">
+          <a class="btn primary" data-app>Abrir o app
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h10M11 6l4 4-4 4"/></svg></a>
+          <a class="btn ghost" href="#/como-funciona">Como funciona</a>
+        </div>
+        <p class="hero-note reveal d3">Sem cadastro. Suas anotações ficam no seu aparelho.</p>
+      </div>
+      <div class="herotree reveal">
+        <div class="glow"></div>
+        <svg class="tree" id="hero-tree" viewBox="-20 30 340 272" role="img" aria-label="Árvore crescendo de um raminho até florescer"><ellipse class="ground" cx="150" cy="290" rx="118" ry="6"/><g class="sway"><g id="hero-g"></g></g></svg>
+        <div class="stagechip" id="hero-stage"><b>Raminho</b></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="s-como" class="rule">
+    <div class="in">
+      <div class="sec-head reveal"><div class="eyebrow">Como funciona</div><h2>Começa pequeno de propósito.</h2></div>
+      <div class="steps">
+        <div class="step reveal"><div class="n">1</div><h3>Doze perguntas</h3><p>Como você está, como anda o sono, o treino, a comida, a fé. Sem resposta certa, só um retrato de hoje.</p></div>
+        <div class="step reveal d1"><div class="n">2</div><h3>Três hábitos com horário</h3><p>O app escolhe três para começar, com horário sugerido. Nada além disso nas primeiras duas semanas.</p></div>
+        <div class="step reveal d2"><div class="n">3</div><h3>Um item já conta</h3><p>Fez só um? O dia está ativo e a sequência continua. Voltar pela metade ainda é voltar.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-app" class="appsec rule">
+    <div class="in">
+      <div class="phone reveal" id="phone" aria-hidden="true">
+        <div class="ph-top"><span>Bom dia.</span><span class="ph-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21v-9"/><path d="M12 12c0-4 3-6.5 7.5-6.5 0 4.3-3 6.5-7.5 6.5z"/></svg>12</span></div>
+        <div class="ph-hero">
+          <div class="ph-ring"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="36" fill="none" stroke="rgba(230,247,249,.11)" stroke-width="7"/><circle class="fg" cx="42" cy="42" r="36" fill="none" stroke-width="7" stroke-linecap="round"/></svg><b>67%</b></div>
+          <div class="ph-streak"><b>9</b><span>dias seguidos</span></div>
+        </div>
+        <svg class="ph-chart" viewBox="0 0 260 70" preserveAspectRatio="none"><path d="M0,52 C20,50 30,40 50,42 C70,44 80,28 100,30 C120,32 130,46 150,40 C170,34 180,18 200,20 C220,22 235,14 260,10"/></svg>
+        <div class="ph-card ok"><i></i><span>Beber água ao acordar</span><em>07:00</em></div>
+        <div class="ph-card ok"><i></i><span>Dez minutos de movimento</span><em>18:00</em></div>
+        <div class="ph-card"><i></i><span>Um horário fixo para deitar</span><em>22:30</em></div>
+      </div>
+      <div>
+        <div class="sec-head reveal" style="margin-bottom:20px"><div class="eyebrow">O app</div><h2>Feito para voltar devagar.</h2></div>
+        <div class="feat">
+          <div class="reveal"><h3>Avisos calmos</h3><p>Um lembrete antes de cada hábito com horário, com som opcional e sem alarme estridente.</p></div>
+          <div class="reveal d1"><h3>Evolução que dá para ver</h3><p>Um gráfico do quanto você cumpriu, com o seu humor de cada dia logo embaixo.</p></div>
+          <div class="reveal"><h3>Fim de semana leve</h3><p>No sábado e no domingo o app sugere sair, ver gente e descansar a cabeça.</p></div>
+          <div class="reveal d1"><h3>Carta da semana</h3><p>Todo domingo, um resumo do que você escreveu: dias leves, planos e o que ficou.</p></div>
+          <div class="reveal"><h3>Seis paletas</h3><p>Você escolhe a cor logo na entrada. Preto com ciano é o padrão.</p></div>
+          <div class="reveal d1"><h3>Sem cadastro</h3><p>Abre e usa. O que você escreve fica no seu aparelho.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-arvore" class="treesec rule">
+    <div class="in">
+      <div class="treestage reveal">
+        <div class="herotree" style="max-width:none">
+          <div class="glow"></div>
+          <svg class="tree" id="demo-tree" viewBox="-20 30 340 272" role="img" aria-label="Árvore de exemplo"><ellipse class="ground" cx="150" cy="290" rx="118" ry="6"/><g class="sway"><g id="demo-g"></g></g></svg>
+        </div>
+      </div>
+      <div>
+        <div class="sec-head reveal" style="margin-bottom:10px"><div class="eyebrow">A árvore</div><h2>Cada anotação faz ela crescer.</h2></div>
+        <p class="lede reveal">Todo dia você conta o que planeja, como está e como foi o dia, escrevendo ou gravando um áudio. A árvore começa como um raminho e vai abrindo galho por galho.</p>
+        <div class="stages reveal" id="stages"></div>
+        <div class="tree-points reveal">
+          <p><b>Ela não murcha.</b> Se você faltar um dia, ela só espera.</p>
+          <p><b>Muda com a estação.</b> Flor na primavera, folha laranja no outono.</p>
+          <p><b>Amigos podem regar.</b> Eles veem a árvore, nunca as suas anotações.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-perguntas" class="rule">
+    <div class="in">
+      <div class="sec-head reveal"><div class="eyebrow">Perguntas</div><h2>O que costumam perguntar.</h2></div>
+      <div class="faq reveal">
+        <details><summary>É gratuito mesmo?</summary><div class="ans">Sim. O Getting Back é gratuito e não tem plano pago para liberar recurso.</div></details>
+        <details><summary>Preciso criar conta?</summary><div class="ans">Não. Você abre, responde as perguntas e começa. Tudo fica salvo no próprio aparelho.</div></details>
+        <details><summary>Quem lê o que eu escrevo na árvore?</summary><div class="ans">Só você. As anotações e os áudios ficam guardados no seu aparelho. Amigos que regam a sua árvore veem o tamanho dela, nunca o conteúdo.</div></details>
+        <details><summary>E se eu ficar dias sem abrir?</summary><div class="ans">Nada de ruim acontece. A sequência recomeça, mas a árvore continua do tamanho que estava. O app foi feito para quem vai e volta.</div></details>
+        <details><summary>Tem para Android e iPhone?</summary><div class="ans">Por enquanto o app roda pelo navegador, no celular ou no computador. As versões de loja estão em desenvolvimento.</div></details>
+        <details><summary>O app substitui acompanhamento profissional?</summary><div class="ans">Não. Ele ajuda a organizar a rotina. Se o peso que você sente não é só de organização, vale conversar com alguém de confiança ou com um profissional.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <div class="final rule">
+    <div class="in">
+      <h2 class="reveal">Hoje pode ser o dia um.</h2>
+      <p class="lede reveal d1">Leva uns dois minutos para responder as perguntas. O resto vai no seu ritmo.</p>
+      <a class="btn primary reveal d2" data-app>Abrir o app</a>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CONTATO ================= -->
+<div class="page" id="p-contato">
+  <div class="doc">
+    <div class="eyebrow">Contato</div>
+    <h1 style="margin-top:12px">Fala com a gente.</h1>
+    <p class="lede">Sugestão, problema no app ou só para contar como está indo. A gente lê tudo.</p>
+    <div id="form-alert" aria-live="polite"></div>
+    <form class="form" id="cform" novalidate>
+      <div class="field"><label for="c-nome">Nome</label><input id="c-nome" name="nome" autocomplete="name" maxlength="80"><span class="ferr"></span></div>
+      <div class="field"><label for="c-email">E-mail</label><input id="c-email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="120"><span class="ferr"></span></div>
+      <div class="field"><label for="c-assunto">Assunto</label>
+        <select id="c-assunto" name="assunto"><option value="">Escolha um assunto</option><option>Sugestão</option><option>Problema no app</option><option>Parceria</option><option>Outro</option></select><span class="ferr"></span></div>
+      <div class="field"><label for="c-msg">Mensagem</label><textarea id="c-msg" name="mensagem" maxlength="2000"></textarea><span class="ferr"></span></div>
+      <div class="field" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden"><label for="c-site">Não preencha</label><input id="c-site" name="site" tabindex="-1" autocomplete="off"></div>
+      <div class="field"><label class="consent" for="c-ok"><input id="c-ok" type="checkbox"> <span>Li a <a href="#/privacidade">política de privacidade</a> e autorizo o uso destes dados para responder a minha mensagem.</span></label><span class="ferr"></span></div>
+      <button class="btn primary" id="c-send" type="submit">Enviar mensagem</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= PRIVACIDADE ================= -->
+<div class="page" id="p-privacidade">
+  <article class="doc">
+    <div class="eyebrow">Privacidade</div>
+    <h1 style="margin-top:12px">Política de privacidade</h1>
+    <p class="upd">Atualizada em setembro de 2026</p>
+    <p class="draft">Modelo em linguagem simples. Revise com alguém que entenda de LGPD antes de publicar.</p>
+    <h2>O que fica no seu aparelho</h2>
+    <p>Respostas do questionário, hábitos, marcações, anotações da árvore e áudios ficam guardados no armazenamento do seu próprio navegador ou celular. Não enviamos esse conteúdo para nenhum servidor.</p>
+    <h2>O que chega até nós</h2>
+    <p>Só o que você mandar pelo formulário de contato: nome, e-mail, assunto e a mensagem, com o seu consentimento. Usamos isso para responder, e nada além disso.</p>
+    <p>Essas mensagens ficam armazenadas no Supabase, serviço de banco de dados que atua como operador, em servidores nos Estados Unidos.</p>
+    <h2>Amigos que regam</h2>
+    <p>Quando a função de amigos estiver ativa, quem você convidar verá apenas o estágio da sua árvore. Nunca as anotações, o humor ou os áudios.</p>
+    <h2>Apagar seus dados</h2>
+    <p>No app, em Ajustes, a opção "Apagar todos os dados" remove tudo do aparelho na hora. Para apagar uma mensagem de contato, escreva para nós pela página de contato.</p>
+    <h2>Venda de dados</h2>
+    <p>Não vendemos nem compartilhamos seus dados com terceiros.</p>
+  </article>
+</div>
+
+<!-- ================= TERMOS ================= -->
+<div class="page" id="p-termos">
+  <article class="doc">
+    <div class="eyebrow">Termos</div>
+    <h1 style="margin-top:12px">Termos de uso</h1>
+    <p class="upd">Atualizados em setembro de 2026</p>
+    <p class="draft">Modelo em linguagem simples. Revise antes de publicar.</p>
+    <h2>O serviço</h2>
+    <p>O Getting Back é um app gratuito de organização de rotina e diário pessoal. Ele pode mudar, ganhar ou perder funções ao longo do tempo.</p>
+    <h2>Não é tratamento</h2>
+    <p>O app não oferece diagnóstico, tratamento ou orientação médica, nutricional ou psicológica. Sugestões de hábitos são gerais. Em caso de sofrimento intenso, procure um profissional ou alguém de confiança.</p>
+    <h2>Seus dados, sua responsabilidade</h2>
+    <p>Como o conteúdo fica no seu aparelho, trocar de celular ou limpar o navegador pode apagar o histórico. Faça isso sabendo que não temos cópia.</p>
+    <h2>Uso adequado</h2>
+    <p>Não use o app ou o formulário de contato para enviar conteúdo ilegal, ofensivo ou que viole direitos de outras pessoas.</p>
+  </article>
+</div>
+
+<!-- ================= 404 ================= -->
+<div class="page" id="p-404">
+  <div class="nf">
+    <svg class="tree" viewBox="-20 30 340 272" aria-hidden="true"><ellipse class="ground" cx="150" cy="290" rx="118" ry="6"/><g class="sway"><g id="nf-g"></g></g></svg>
+    <div class="code404">ERRO 404</div>
+    <h1>Essa página ainda não brotou.</h1>
+    <p class="lede">O link pode estar quebrado ou a página mudou de lugar. Sem problema: dá para voltar daqui.</p>
+    <div class="cta-row" style="justify-content:center;margin-top:0">
+      <a class="btn primary" href="#/">Voltar ao início</a>
+      <a class="btn ghost" data-app>Abrir o app</a>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <div class="in">
+    <div class="fgrid">
+      <div>
+        <a class="logo" href="#/"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 54V30" stroke="#22D3EE" stroke-width="4.5" stroke-linecap="round"/><path d="M32 30c0-9 6-14 15-14 0 9-6 14-15 14z" fill="#22D3EE"/><path d="M32 36c0-7-5-11-12-11 0 7 5 11 12 11z" fill="#22D3EE" opacity=".7"/></svg>Getting Back</a>
+        <p>Um app gratuito para voltar à rotina devagar, no seu ritmo.</p>
+      </div>
+      <div class="fcol"><h4>Produto</h4>
+        <a href="#/como-funciona">Como funciona</a><a href="#/app">O app</a><a href="#/arvore">A árvore</a><a href="#/perguntas">Perguntas</a><a data-app>Abrir o app</a>
+      </div>
+      <div class="fcol"><h4>Getting Back</h4>
+        <a href="#/contato">Contato</a><a href="#/privacidade">Privacidade</a><a href="#/termos">Termos de uso</a>
+      </div>
+    </div>
+    <div class="fbot"><span>© 2026 Getting Back</span><a href="#/" id="totop" style="text-decoration:none">Voltar ao topo</a></div>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>window.FORCE_404 = true;
+const APP_URL = "app/";
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let SEASON = "primavera";
+function rng(a){ return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const TREE = (function build(seed){
+  const r = rng(seed), B = [];
+  (function add(angle, len, depth){
+    const b = {angle, len, depth, birth: depth === 0 ? 0 : .1 + (depth-1)*.135 + r()*.05, kids:[], id:B.length, ls:r()};
+    B.push(b);
+    if(depth < 6){
+      const n = depth === 0 ? 2 : (r() < .35 ? 3 : 2);
+      for(let i=0;i<n;i++){
+        const spread = n === 2 ? (i ? 1 : -1)*(14 + r()*16) : (i-1)*(22 + r()*10);
+        const a = Math.max(-158, Math.min(-22, angle + spread + (r()-.5)*10));
+        b.kids.push(add(a, len*(.72 + r()*.1), depth+1));
+      }
+    }
+    return b;
+  })(-90 + (r()-.5)*4, 1, 0);
+  return B;
+})(11);
+
+function treeSVG(g, D){
+  const SE = SEASON;
+  const out = [], leaves = [], flowers = [], L0 = 62;
+  const ease = t => 1 - Math.pow(1-t, 3), cl = t => Math.max(0, Math.min(1, t));
+  const bw = 2 + 9*Math.sqrt(g), F = n => n.toFixed(1);
+  (function walk(b, x, y){
+    const f = ease(cl((g - b.birth)/.16));
+    if(f <= 0) return;
+    const a = b.angle*Math.PI/180, len = b.len*L0*f;
+    const x2 = x + Math.cos(a)*len, y2 = y + Math.sin(a)*len;
+    const w = Math.max(.8, bw*Math.pow(.64, b.depth)*(.45 + .55*f));
+    out.push(`<line x1="${F(x)}" y1="${F(y)}" x2="${F(x2)}" y2="${F(y2)}" stroke-width="${w.toFixed(2)}"/>`);
+    let kg = 0;
+    b.kids.forEach(k => { kg = Math.max(kg, ease(cl((g - k.birth)/.16))); walk(k, x2, y2); });
+    if(b.depth >= 1){
+      let lf = ease(cl((g - b.birth - .06)/.14));
+      if(b.depth < 4) lf *= (1 - .6*kg);
+      if(lf > .02){
+        const n = b.depth >= 5 ? 3 : 2;
+        for(let i=0;i<n;i++){
+          if(SE === "inverno" && b.depth >= 4 && (b.id + i) % 2 === 0) continue;
+          const ang = b.angle + (i - (n-1)/2)*55 + (b.ls - .5)*40, ar = ang*Math.PI/180, off = 3 + i*1.2;
+          const lx = x2 + Math.cos(ar)*off, ly = y2 + Math.sin(ar)*off, sz = lf*(.85 + b.ls*.4)*(1 + Math.max(0, 5 - b.depth)*.14);
+          leaves.push(`<ellipse cx="${F(lx)}" cy="${F(ly)}" rx="${(5.2*sz).toFixed(2)}" ry="${(2.8*sz).toFixed(2)}" transform="rotate(${ang.toFixed(0)} ${F(lx)} ${F(ly)})" opacity="${(.5 + ((b.id*7 + i)%5)*.11).toFixed(2)}"/>`);
+        }
+        if(((D >= 80 && b.ls > .7) || (SE === "primavera" && g > .42 && b.ls > .74)) && b.depth >= 4) flowers.push(`<circle cx="${F(x2)}" cy="${F(y2)}" r="${(2.6*lf).toFixed(2)}"/>`);
+      }
+    }
+    if(b.depth === 0 && g < .32){
+      const sz = (1 - cl((g - .2)/.12)) * Math.min(1, g/.05);
+      [-1,1].forEach(side => {
+        const ang = -90 + side*58, ar = ang*Math.PI/180, lx = x2 + Math.cos(ar)*6*sz, ly = y2 + Math.sin(ar)*6*sz;
+        leaves.push(`<ellipse cx="${F(lx)}" cy="${F(ly)}" rx="${(7.5*sz).toFixed(2)}" ry="${(3.8*sz).toFixed(2)}" transform="rotate(${ang} ${F(lx)} ${F(ly)})" opacity=".92"/>`);
+      });
+    }
+  })(TREE[0], 150, 290);
+  return `<g class="trunk">${out.join("")}</g><g class="leaves">${leaves.join("")}</g><g class="flowers">${flowers.join("")}</g>`;
+}
+
+
+const STAGES = [[0,"Raminho"],[3,"Broto"],[7,"Muda"],[15,"Arbusto"],[30,"Árvore jovem"],[50,"Árvore"],[80,"Árvore em flor"]];
+const treeG = D => .04 + .96*(1 - Math.exp(-D/30));
+const gToD = g => g <= .04 ? 0 : -30*Math.log(1 - (g - .04)/.96);
+const stageOf = D => { let i = 0; STAGES.forEach((s,j) => { if(D >= s[0]) i = j; }); return i; };
+
+/* ---------- links do app (um lugar só, evita link quebrado) ---------- */
+$$("[data-app]").forEach(a => a.href = APP_URL);
+
+/* ---------- animação da árvore ---------- */
+function grow(el, from, to, dur, D, onFrame){
+  if(el._raf) cancelAnimationFrame(el._raf);
+  if(REDUCED || dur <= 0){ el.innerHTML = treeSVG(to, D); onFrame && onFrame(to); return; }
+  const t0 = performance.now(); let last = 0;
+  const f = now => {
+    const t = Math.min(1, (now - t0)/dur), e = 1 - Math.pow(1 - t, 3), g = from + (to - from)*e;
+    if(t < 1 && now - last < 33){ el._raf = requestAnimationFrame(f); return; }
+    last = now; el.innerHTML = treeSVG(g, D); onFrame && onFrame(g);
+    if(t < 1) el._raf = requestAnimationFrame(f);
+  };
+  el._raf = requestAnimationFrame(f);
+}
+let heroDone = false;
+function heroTree(){
+  if(heroDone) return; heroDone = true;
+  const chip = $("#hero-stage");
+  setTimeout(() => grow($("#hero-g"), .04, .95, 6500, 90, g => { chip.innerHTML = "<b>" + STAGES[stageOf(gToD(g))][1] + "</b>"; }), 500);
+}
+let demoG = .04;
+function buildStages(){
+  const box = $("#stages");
+  box.innerHTML = STAGES.map((s,i) => `<button type="button" data-i="${i}" aria-pressed="false">${s[1]}</button>`).join("");
+  box.querySelectorAll("button").forEach(b => b.onclick = () => demoTo(+b.dataset.i));
+}
+function demoTo(i){
+  const D = Math.max(STAGES[i][0], i === 0 ? .2 : STAGES[i][0]), g = treeG(D);
+  $$("#stages button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.i === i));
+  grow($("#demo-g"), demoG, g, 2600, D); demoG = g;
+}
+
+/* ---------- roteador (páginas, títulos, metadados, 404) ---------- */
+const SECTIONS = {"como-funciona":"s-como", "app":"s-app", "arvore":"s-arvore", "perguntas":"s-perguntas"};
+const PAGES = {
+  "":            {id:"p-home", title:"Getting Back — um app gratuito para voltar à rotina, devagar", desc:"Um app gratuito para quem saiu da rotina e quer voltar no próprio ritmo: três hábitos por vez, avisos calmos e uma árvore que cresce com o seu diário."},
+  "contato":     {id:"p-contato", title:"Contato — Getting Back", desc:"Fale com o time do Getting Back: sugestões, problemas no app ou parcerias."},
+  "privacidade": {id:"p-privacidade", title:"Privacidade — Getting Back", desc:"Como o Getting Back trata seus dados: quase tudo fica no seu próprio aparelho."},
+  "termos":      {id:"p-termos", title:"Termos de uso — Getting Back", desc:"Termos de uso do Getting Back, app gratuito de rotina e diário pessoal."},
+  "404":         {id:"p-404", title:"Página não encontrada — Getting Back", desc:"Essa página não existe ou mudou de lugar."}
+};
+const SEC_TITLES = {"como-funciona":"Como funciona", "app":"O app", "arvore":"A árvore", "perguntas":"Perguntas"};
+function route(){
+  const raw = (window.FORCE_404 && !location.hash) ? "404x" : (location.hash || "#/").replace(/^#\/?/, "").replace(/\/$/, "");
+  if(raw === "conteudo") return;                           // link de acessibilidade
+  const sec = SECTIONS[raw];
+  const page = sec ? PAGES[""] : (PAGES[raw] && raw !== "404" ? PAGES[raw] : PAGES["404"]);
+  const changed = !$("#" + page.id).classList.contains("on");
+  $$(".page").forEach(p => p.classList.toggle("on", p.id === page.id));
+  document.title = sec ? SEC_TITLES[raw] + " — Getting Back" : page.title;
+  document.querySelector('meta[name="description"]').setAttribute("content", page.desc);
+  document.querySelector('meta[property="og:title"]').setAttribute("content", document.title);
+  $$(".links a[href^='#/'], .mnav a[href^='#/']").forEach(a => a.getAttribute("href") === "#/" + raw ? a.setAttribute("aria-current","page") : a.removeAttribute("aria-current"));
+  closeMenu();
+  if(sec){ const go = () => document.getElementById(sec).scrollIntoView({behavior: REDUCED ? "auto" : "smooth"}); changed ? setTimeout(go, 60) : go(); }
+  else window.scrollTo({top:0, behavior:"auto"});
+  if(page.id === "p-home") heroTree();
+  if(page.id === "p-404") grow($("#nf-g"), .04, .08, 1600, 0);
+  observe();
+}
+window.addEventListener("hashchange", route);
+
+/* ---------- menu mobile ---------- */
+const burger = $("#burger"), mnav = $("#mnav");
+function openMenu(){ mnav.classList.add("on"); burger.setAttribute("aria-expanded","true"); burger.setAttribute("aria-label","Fechar menu"); document.body.classList.add("lock"); }
+function closeMenu(){ mnav.classList.remove("on"); burger.setAttribute("aria-expanded","false"); burger.setAttribute("aria-label","Abrir menu"); document.body.classList.remove("lock"); }
+burger.onclick = () => mnav.classList.contains("on") ? closeMenu() : openMenu();
+mnav.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setTimeout(closeMenu, 50)));
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeMenu(); });
+matchMedia("(min-width:821px)").addEventListener("change", e => { if(e.matches) closeMenu(); });
+
+/* ---------- cabeçalho e topo ---------- */
+addEventListener("scroll", () => $("#hdr").classList.toggle("scrolled", scrollY > 8), {passive:true});
+$("#totop").onclick = e => { e.preventDefault(); window.scrollTo({top:0, behavior: REDUCED ? "auto" : "smooth"}); };
+
+/* ---------- revelar ao rolar ---------- */
+let io;
+function observe(){
+  if(REDUCED || !("IntersectionObserver" in window)){ $$(".reveal").forEach(el => el.classList.add("seen")); $("#phone").classList.add("seen"); return; }
+  if(!io) io = new IntersectionObserver(es => es.forEach(e => {
+    if(!e.isIntersecting) return;
+    e.target.classList.add("seen"); io.unobserve(e.target);
+    if(e.target.classList.contains("treestage") && demoG < .1) setTimeout(() => demoTo(5), 400);
+  }), {threshold:.18, rootMargin:"0px 0px -40px 0px"});
+  $$(".page.on .reveal:not(.seen)").forEach(el => io.observe(el));
+}
+
+/* ---------- toast ---------- */
+let tt; function toast(t, err){ const el = $("#toast"); el.textContent = t; el.classList.toggle("err", !!err); el.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => el.classList.remove("on"), 3200); }
+
+/* ---------- formulário: sucesso e erro ---------- */
+const ICON_OK = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><path d="m6.5 10.3 2.3 2.3 4.7-5"/></svg>';
+const ICON_ERR = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 6v5M10 14h.01"/></svg>';
+const RULES = {
+  "c-nome": v => v.trim().length < 2 ? "Escreva seu nome." : "",
+  "c-email": v => !v.trim() ? "Escreva seu e-mail." : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? "Esse e-mail parece incompleto. Confira se tem @ e o domínio." : "",
+  "c-assunto": v => !v ? "Escolha um assunto." : "",
+  "c-msg": v => v.trim().length < 10 ? "Conte um pouco mais, pelo menos uma frase." : "",
+  "c-ok": (v, el) => !el.checked ? "Para enviar, marque que leu a política de privacidade." : ""
+};
+function check(id){ const el = $("#" + id), msg = RULES[id](el.value, el), f = el.closest(".field"); f.classList.toggle("bad", !!msg); f.querySelector(".ferr").textContent = msg; el.setAttribute("aria-invalid", !!msg); return !msg; }
+Object.keys(RULES).forEach(id => { const el = $("#" + id); el.addEventListener("blur", () => { if(el.value && el.type !== "checkbox") check(id); }); el.addEventListener(el.type === "checkbox" ? "change" : "input", () => { if(el.closest(".field").classList.contains("bad")) check(id); }); });
+function alertBox(kind, html){ $("#form-alert").innerHTML = `<div class="alert ${kind}" role="${kind === "err" ? "alert" : "status"}">${kind === "ok" ? ICON_OK : ICON_ERR}<div>${html}</div></div>`; }
+$("#cform").addEventListener("submit", e => {
+  e.preventDefault();
+  const bad = Object.keys(RULES).filter(id => !check(id));
+  if(bad.length){ alertBox("err", "Faltou pouco. Confira " + (bad.length === 1 ? "o campo marcado" : "os " + bad.length + " campos marcados") + " abaixo."); $("#" + bad[0]).focus(); return; }
+  if(!navigator.onLine){ alertBox("err", "Sem conexão com a internet. Sua mensagem continua aqui, tente enviar de novo em instantes."); return; }
+  const btn = $("#c-send"); btn.disabled = true; btn.textContent = "Enviando...";
+  const nome = $("#c-nome").value.trim();
+  const ok = () => {
+    alertBox("ok", `<b>Mensagem recebida, ${esc(nome.split(" ")[0])}.</b><br>Obrigado por escrever. A resposta chega no seu e-mail.`);
+    $("#cform").reset(); Object.keys(RULES).forEach(id => $("#" + id).closest(".field").classList.remove("bad"));
+    $("#form-alert").scrollIntoView({behavior: REDUCED ? "auto" : "smooth", block:"center"});
+  };
+  const done = () => { btn.disabled = false; btn.textContent = "Enviar mensagem"; };
+  if($("#c-site").value){ setTimeout(() => { done(); ok(); }, 800); return; }   // robô preencheu o campo escondido
+  sendContact({nome, email: $("#c-email").value.trim(), assunto: $("#c-assunto").value, mensagem: $("#c-msg").value.trim(), consentiu: true})
+    .then(() => { done(); ok(); })
+    .catch(err => {
+      done();
+      alertBox("err", err && err.status === 400
+        ? "Algum campo não passou na validação do servidor. Confira o e-mail e o tamanho da mensagem."
+        : "Não deu para enviar agora. Sua mensagem continua aqui, tente de novo em instantes.");
+    });
+});
+const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- envio para o Supabase ---------- */
+// Chave publicável: pode ficar no front. Quem protege a tabela é o RLS (visitante só insere, não lê).
+const SUPABASE_URL = "https://audizsjaopccvcgplbgt.supabase.co";
+const SUPABASE_KEY = "sb_publishable_rva_LxoFAqwlZhFoQCo-Bg_UIkedpN0";
+async function sendContact(row){
+  const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 12000);
+  try{
+    const r = await fetch(SUPABASE_URL + "/rest/v1/contato", {
+      method: "POST",
+      headers: {"apikey": SUPABASE_KEY, "Content-Type": "application/json", "Prefer": "return=minimal"},
+      body: JSON.stringify(row), signal: ctrl.signal
+    });
+    if(!r.ok){ const e = new Error("envio falhou"); e.status = r.status; throw e; }
+  } finally { clearTimeout(timer); }
+}
+
+/* ---------- início ---------- */
+buildStages();
+route();
+</script>
+</body>
+</html>

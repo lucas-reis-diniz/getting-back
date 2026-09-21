@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://lucas-reis-diniz.github.io/getting-back/sitemap.xml
